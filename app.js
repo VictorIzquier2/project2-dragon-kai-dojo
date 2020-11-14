@@ -26,7 +26,11 @@ app.set('views', __dirname + '/views');
 
 // ROUTES
 app.get('/', (req, res, next) => {
-  res.render('index');
+  let data = {
+    name: 'Ironhacker',
+    bootcamp: 'Ironhack web dev'
+  };
+  res.render('index', data);
 });
 
 // LISTENER
