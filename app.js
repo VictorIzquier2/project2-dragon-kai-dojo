@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
+const mongoose = require('mongoose');
 
 
 // CONSTANTS
@@ -12,15 +13,28 @@ const app = express();
 // .env CONFIG
 dotenv.config();
 
-console.log(chalk.blue('Hello there! Node is installed!'));
-
 // bodyParser CONFIG
 app.use(bodyParser.urlencoded({extended: true}));
+
+// mongoose CONFIG
+mongoose
+  .connect(`mongodb://localhost/${process.env.DATABASE}`, {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  })
+  .then((result) => {
+    console.log(chalk.white.bgBlue('Connected to Mongodb. Database name: ', result.connections[0].name));
+  })
+  .catch((err) => {
+    console.log(chalk.red('There has been an error: ', err));
+  });
 
 // STATIC FILES
 app.use(express.static(__dirname + '/public'));
 
-// .hbs CONFIG
+// DYNAMICS FILES
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 
