@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 // CONSTANTS
 const app = express();
 
+// MODELS
+const Civilian = require('./models/Civilian.js');
 // .env CONFIG
 dotenv.config();
 
@@ -40,11 +42,27 @@ app.set('views', __dirname + '/views');
 
 // ROUTES
 app.get('/', (req, res, next) => {
-  let data = {
-    name: 'Ironhacker',
-    bootcamp: 'Ironhack web dev'
-  };
-  res.render('index', data);
+
+  /*
+  let robin = new Civilian({name: 'Robin'});
+  robin
+    .save()
+    .then(newCivilian => {
+      console.log(`A new civilian is created: ${newCivilian}`);
+    })
+    .catch(err =>{
+      console.log(`Error while creating a new civilian: ${err}`);
+    })
+  res.render('index', robin);
+  */
+
+  Civilian.find()
+    .then(civsFromDB =>{
+      civsFromDB.forEach(civ => console.log(`--> civ: ${civ.name}`));
+    })
+    .catch(err =>{
+      console.log(`Error occurred during getting civilians from Database: ${err}`);
+    });
 });
 
 // LISTENER
