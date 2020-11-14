@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/VictorIzquier2/project2-dragon-kai-dojo/issues"
   },
-  "homepage": "https://github.com/VictorIzquier2/project2-dragon-kai-dojo#readme"
+  "homepage": "https://github.com/VictorIzquier2/project2-dragon-kai-dojo#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
 }
