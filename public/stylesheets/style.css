@@ -1,11 +1,69 @@
 
-/* INDEX */
-.container {
-  width: 100vw;
+/* GENERALS */
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+:root {
+  --goldman-font: 'Goldman', cursive;
+  --bowlby-font: 'Bowlby One SC', cursive;
+  --lalezar: 'Lalezar', cursive;
 }
-.container h1 {
-  text-align: center;
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100vw;
 }
 .background-image {
   width: 100%;
+}
+.vista {
+  width: 67vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0.5rem 1rem 2rem;
+}
+.vista h1 {
+  font-family: var(--goldman-font);
+  font-size: 3rem;
+  font-weight: bold;
+  color: crimson;
+  text-align: center;
+}
+.aside {
+  width: 34vw;
+  margin: 1rem 2rem 1rem 0.5rem;
+}
+.aside h2 {
+  font-family: var(--lalezar);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+}
+.aside h1{
+  font-family: var(--lalezar);
+  font-size: 3rem;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+}
+.card-image {
+  width: 100%;
+}
+.btn {
+  font-family: var(--bowlby-font);
+  font-size: 1rem;
+  border: none;
+  text-align: center;
+  text-transform: uppercase;
+}
+.btn:hover{
+  cursor: pointer;
+}
+.btn-primary {
+  width: 100%;
+  padding: 0.5rem 0;
 }
