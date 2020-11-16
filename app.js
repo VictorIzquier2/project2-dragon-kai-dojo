@@ -69,13 +69,18 @@ app.get('/', (req, res, next) => {
   });
 
 app.get('/main', (req, res, next) => {
-  res.render('main');
-})
+
+  Karateka.countDocuments()
+    .then((count) => {
+      console.log(`There are ${count} debs`)
+      res.render('main', {count});
+    })
+});
   
 app.get('/city', (req, res, next) => {
   
   // CIVILIAN GENERATOR
- 
+  /*
   const randomCivilian = () =>{
     const randomGenre = () => {
       const genreList = ['male', 'female'];
@@ -111,18 +116,10 @@ app.get('/city', (req, res, next) => {
     };
 
     const randomUrl = (genre) => {
-      const randomMaleImage = () => {
-        const imageList = ['/images/male1.jpg', '/images/male2.jpg', '/images/male3.jpg', '/images/male4.jpg'];
-        return imageList[Math.round(Math.random() * (imageList.length))];
-      };
-      const randomFemaleImage = () => {
-        const imageList = ['/images/female1.jpg', '/images/female2.jpg', '/images/female3.jpg', '/images/female4.jpg'];
-        return imageList[Math.round(Math.random() * (imageList.length))];
-      };
       if(genre == 'male'){
-        return randomMaleImage();
+        return '/images/male.jpg';
       }else {
-        return randomFemaleImage();
+        return '/images/female.jpg';
       }
     }
     
@@ -135,9 +132,8 @@ app.get('/city', (req, res, next) => {
     })
     return newCiv;
   }
-  /*
+  
   Civilian.create(randomCivilian())
-  .save()
   .then((result) => {
     console.log(result);
   })
@@ -145,7 +141,6 @@ app.get('/city', (req, res, next) => {
     console.log(err);
   })
   */
-  
   /*
   Civilian.find({name: 'Robin', genre: 'female', nature: 'peaceful', solvency: 'wealthy'})
     .then(civsFromDB =>{
@@ -164,7 +159,70 @@ app.get('/city', (req, res, next) => {
 });
 
 app.post('/city', (req, res, next) => {
-  res.render('main');
+  const civId = req.params;
+  const civilian = Civilian
+    .findOne(civId)
+    .then((civilian)=>{
+      console.log(civilian);
+
+      const trainee = () => {
+
+        const karatekaName = () => {
+          return civilian.name;
+        }
+        const karatekaGenre = () => {
+          return civilian.genre;
+        }
+        const karatekaSolvency = () => {
+          return civilian.solvency;
+        }
+        const karatekaNature = () => {
+          return civilian.nature;
+        }
+        const karatekaImageUrl = () => {
+          return civilian.imageUrl;
+        }
+
+          const newKarateka = new Karateka({
+          name: karatekaName(),
+          genre: karatekaGenre(),
+          solvency: karatekaSolvency(),
+          nature: karatekaNature(),
+          level: 'white',
+          strength: 1,
+          dexterity: 1,
+          stamina: 1,
+          mana: 1,
+          standing: 5,
+          imageUrl: karatekaImageUrl(),
+        })
+        return newKarateka;
+      }
+
+      Karateka.create(trainee())
+        .then((trainee) => {
+          console.log(trainee);
+          Karateka.countDocuments()
+            .then((count) => {
+              console.log(`There are ${count} debs`)
+              res.render('main', {count});
+            })
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        
+      })
+      .catch((err)=> {
+        console.log(err);
+      });
+      Civilian.deleteOne(civId)
+      .then((civilian)=>{
+        console.log(civilian);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
 })
 
 // LISTENER
