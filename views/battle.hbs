@@ -1,17 +1,21 @@
 <div class="container-classes">
-  <h1>Results</h1>
+  <h1>choose opponents</h1>
+  <form action="/battle" method="POST">
   <div class="main-classes">
     <div class="list">
       {{#each opponents}}
         <div class="entry">
+          <input type="checkbox" id="{{_id}}" name="{{name}}" value="{{_id}}">
           <img src="{{imageUrl}}" alt="{{name}}">
-          <h2>{{name}}</h2>
-          <h2>{{mana}}</h2>
-          <h2>{{stamina}}</h2>
+          <label for="{{_id}}">{{name}}</label>
+          <h2>💚 {{mana}}</h2>
+          <h2>🛡️ {{stamina}}</h2>
         </div>
       {{/each}}
+        <button class="btn btn-battle">Start Battle</button>
     </div>
   </div>
+  </form>
   <div class="menu">
     <div class="card classes">
       <div class="info">

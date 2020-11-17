@@ -194,21 +194,19 @@ app.post('/train', (req, res, next) => {
       })
   });
 
-app.post('/battle', (req, res, next) => {
+app.get('/battle', (req, res, next) => {
   Karateka.find({}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, _id: 1})
       .then((opponents) => {
-        Karateka.aggregate([
-            { $bucketAuto: {groupBy: "$name", buckets: 6}}
-          ])
-          .then((pairs) => {
-            console.log(pairs)
-            res.render('battle', ({opponents, pairs}));
-          })
+        res.render('battle', ({opponents}))
       })
       .catch((err)=> {
         console.log(err);
       })
 });
+
+app.post('/battle', (req, res, next) => {
+  console.log(req.body);
+})
 
 app.post('/tourney', (req, res, next) => {
   Karateka.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
