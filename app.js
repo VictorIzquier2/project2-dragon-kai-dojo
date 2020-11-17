@@ -13,6 +13,9 @@ const app = express();
 // MODELS
 const Civilian = require('./models/Civilian.js');
 const Karateka = require('./models/Karateka.js');
+const Master = require('./models/Master.js');
+const Sensei = require('./models/Sensei.js');
+const { level } = require('chalk');
 // .env CONFIG
 dotenv.config();
 
@@ -71,12 +74,153 @@ app.get('/', (req, res, next) => {
 app.get('/main', (req, res, next) => {
 
   Karateka.countDocuments()
-    .then((count) => {
-      console.log(`There are ${count} debs`)
-      res.render('main', {count});
+    .then((trainees) => {
+      Civilian.countDocuments()
+        .then((debs) => {
+          Master.countDocuments()
+            .then((masters) => {
+            res.render('main', {trainees, debs, masters});
+            })
+        })
+    })
+  
+});
+
+app.get('/classes', (req, res, next) => {
+  Karateka.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((trainees) => {
+      res.render('classes', {trainees});
+    })
+    .catch((err)=> {
+      console.log(err);
+
     })
 });
-  
+
+app.post('/train', (req, res, next) => {
+
+    const levelUpStrength = (trainee) => {
+      let levelUp = 0;
+      let numberOfDices = trainee.dexterity + trainee.strength;
+      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+      if (numberOfDices == 2){
+        diceRoll > 16 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 3){
+        diceRoll > 24 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 4){
+        diceRoll > 32 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 5){
+        diceRoll > 40 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 6){
+        diceRoll > 48 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 7){
+        diceRoll > 56 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 8){
+        diceRoll > 64 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 9){
+        diceRoll > 72 ? levelUp = 1 : levelUp = 0;
+      }
+      return levelUp;    
+    }
+    
+    const levelUpDexterity = (trainee) => {
+      let levelUp = 0;
+      let numberOfDices = trainee.dexterity + trainee.dexterity - Math.round(trainee.dexterity/2);
+      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+      if(numberOfDices == 1){  
+        diceRoll > 8 ? levelUp = 1 : levelUp = 0;
+      }else if (numberOfDices == 2){
+        diceRoll > 16 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 3){
+        diceRoll > 24 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 4){
+        diceRoll > 32 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 5){
+        diceRoll > 40 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 6){
+        diceRoll > 48 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 7){
+        diceRoll > 56 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 8){
+        diceRoll > 64 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 9){
+        diceRoll > 72 ? levelUp = 1 : levelUp = 0;
+      }
+      return levelUp;
+    }
+
+    const levelUpStamina = (trainee) => {
+      let levelUp = 0;
+      let numberOfDices = trainee.dexterity + trainee.stamina;
+      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+      if (numberOfDices == 2){
+        diceRoll > 16 ? levelUp = 1 : levelUp = 0;
+        return levelUp; 
+      }else if(numberOfDices == 3){
+        diceRoll > 24 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 4){
+        diceRoll > 32 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 5){
+        diceRoll > 40 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 6){
+        diceRoll > 48 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 7){
+        diceRoll > 56 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 8){
+        diceRoll > 64 ? levelUp = 1 : levelUp = 0;
+      }else if(numberOfDices == 9){
+        diceRoll > 72 ? levelUp = 1 : levelUp = 0;
+      }  
+      return levelUp;   
+    }
+
+    Karateka.find({}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, _id: 1})
+      .then((trainees) => {
+        trainees.forEach((trainee)=>{
+          const id = trainee._id;
+          const newStrength = trainee.strength += levelUpStrength(trainee);
+          const newDexterity = trainee.dexterity += levelUpDexterity(trainee);
+          const newStamina = trainee.stamina += levelUpStamina(trainee);
+          Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina})
+          .then((trainee)=>{
+            console.log(trainee);
+          })
+        })
+        res.render('train', {trainees})
+
+      })
+      .catch((err)=> {
+        console.log(err);
+      })
+  });
+
+app.post('/battle', (req, res, next) => {
+  Karateka.find({}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, _id: 1})
+      .then((opponents) => {
+        Karateka.aggregate([
+            { $bucketAuto: {groupBy: "$name", buckets: 6}}
+          ])
+          .then((pairs) => {
+            console.log(pairs)
+            res.render('battle', ({opponents, pairs}));
+          })
+      })
+      .catch((err)=> {
+        console.log(err);
+      })
+});
+
+app.post('/tourney', (req, res, next) => {
+  Karateka.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((trainees) => {
+      res.render('tourney', {trainees});
+    })
+    .catch((err)=> {
+      console.log(err);
+
+    });
+});
+
 app.get('/city', (req, res, next) => {
   
   // CIVILIAN GENERATOR
@@ -224,6 +368,19 @@ app.post('/city', (req, res, next) => {
         console.log(err);
       })
 })
+
+app.get('/fight', (req, res, next) => {
+  Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((masters) => {
+      Sensei.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+        .then((senseis) => {
+          res.render('fight', {masters, senseis});
+        })
+    })
+    .catch((err)=> {
+      console.log(err);
+    })
+});
 
 // LISTENER
 app.listen(process.env.PORT, () => {

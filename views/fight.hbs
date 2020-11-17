@@ -1,0 +1,39 @@
+<div class="container-fight">
+    <h1>Fight</h1>
+    <div class="main-fight">
+    <div class="list">
+      {{#each masters}}
+      <div class="entry">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <h2>{{name}}</h2>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+        <h2>{{standing}}</h2>
+      </div>
+      {{/each}}
+    </div>
+    <div class="list">
+      {{#each senseis}}
+      <div class="entry">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <h2>{{name}}</h2>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+        <h2>{{standing}}</h2>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="menu">
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+      <div class="card valley">
+      <a href="/city">
+        <img class="card-image" src="/images/city.jpg" alt="outside dojo">
+        <h2>Back to All Valley</h2>
+      </a>
+    </div>
+  </div>
+</div>

@@ -5,9 +5,11 @@
       <img class="background-image" src="/images/dojo.jpg" alt="real dojo">
     </div>
     <div class="aside">
-      <div class="card">
-        <h2>Trainees</h2>
-        <h1>{{{count}}}</h1>
+      <div class="card master">
+        <div class="info">
+          <h2>Masters</h2>
+          <h1>{{{masters}}}</h1>
+        </div>
         <img class="card-image" src="/images/male4.jpg" alt="crowd">
         <form action="/main" method="POST">
           <button class="btn btn-primary">Recruit</button>
@@ -16,13 +18,21 @@
     </div>
   </div>
   <div class="menu">
-    <div class="card">
+    <div class="card classes">
+      <div class="info">
+        <h4>Trainees</h4>
+        <h3>{{{trainees}}}</h3>
+      </div>
       <a href="/classes">
         <img class="card-image" src="/images/class.jpg" alt="Martial Art Class">
         <h2>Go to Classes</h2>
       </a>
     </div>
-    <div class="card">
+    <div class="card valley">
+      <div class="info">
+        <h4>Debs</h4>
+        <h3>{{{debs}}}</h3>
+      </div>
       <a href="/city">
         <img class="card-image" src="/images/city.jpg" alt="outside dojo">
         <h2>Go to All Valley</h2>

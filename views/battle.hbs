@@ -1,0 +1,31 @@
+<div class="container-classes">
+  <h1>Results</h1>
+  <div class="main-classes">
+    <div class="list">
+      {{#each opponents}}
+        <div class="entry">
+          <img src="{{imageUrl}}" alt="{{name}}">
+          <h2>{{name}}</h2>
+          <h2>{{mana}}</h2>
+          <h2>{{stamina}}</h2>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="menu">
+    <div class="card classes">
+      <div class="info">
+      </div>
+      <a href="/classes">
+        <img class="card-image" src="/images/class.jpg" alt="Martial Art Class">
+        <h2>Back to Classes</h2>
+      </a>
+    </div>
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+  </div>
+</div>>

@@ -1,0 +1,56 @@
+<div class="container-classes">
+  <h1>Class</h1>
+  <div class="main-classes">
+    <div class="list">
+      {{#each trainees}}
+      <div class="entry">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <h2>{{name}}</h2>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+        <h2>{{standing}}</h2>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  <h1>Training</h1>
+  <div class="training">
+    <div class="card">
+      <div class="info">
+      </div>
+      <img class="card-image" src="/images/train.jpg" alt="outside dojo">
+      <form action="/train" method="POST">
+        <button class="btn btn-primary">Train</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="info">
+      </div>
+      <img class="card-image" src="/images/battle.jpg" alt="outside dojo">
+      <form action="/battle" method="POST">
+        <button class="btn btn-primary">Battle</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="info">
+      </div>
+      <img class="card-image" src="/images/tourney.jpg" alt="outside dojo">
+      <form action="/tourney" method="POST">
+        <button class="btn btn-primary">Tourney</button>
+      </form>
+    </div>
+  </div>
+  <div class="menu">
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+      <div class="card fight">
+      <a href="/fight">
+        <img class="card-image" src="/images/look-for-fight.jpg" alt="outside dojo">
+        <h2>Look for a fight</h2>
+      </a>
+    </div>
+  </div>
+</div>

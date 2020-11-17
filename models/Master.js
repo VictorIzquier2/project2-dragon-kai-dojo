@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const karatekaSchema = new Schema({
+const masterSchema = new Schema({
   name: {type: String},
   genre: {type: String, enum: ['male', 'female']},
   solvency: {type: String, enum: ['insolvent', 'solvent', 'wealthy']},
@@ -10,10 +10,10 @@ const karatekaSchema = new Schema({
   strength: {type: Number, min: 1, max: 5, default: 2},
   dexterity: {type: Number, min: 1, max: 5, default: 2},
   stamina: {type: Number, min: 1, max: 5, default: 2},
-  mana: {type: Number, min: 1, max: 5, default: 2},
-  standing: {type: Number, min: 5, max: 25},
+  mana: {type: Number, min: 1, max: 10, default: 2},
+  standing: {type: Number, min: 5, max: 50},
   imageUrl: {type: String}
 });
 
-const Karateka = mongoose.model('Karateka', karatekaSchema);
-module.exports = Karateka;
+const Master = mongoose.model('Master', masterSchema);
+module.exports = Master;
