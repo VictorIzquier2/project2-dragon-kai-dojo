@@ -7,7 +7,6 @@
         <img src="{{imageUrl}}" alt="{{name}}">
         <h2>{{name}}</h2>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
-        <h2>{{standing}}</h2>
       </div>
       {{/each}}
     </div>
@@ -34,7 +33,7 @@
       <div class="info">
       </div>
       <img class="card-image" src="/images/tourney.jpg" alt="outside dojo">
-      <form action="/tourney" method="POST">
+      <form action="/tourney" method="GET">
         <button class="btn btn-primary">Tourney</button>
       </form>
     </div>

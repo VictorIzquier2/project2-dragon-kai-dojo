@@ -65,9 +65,24 @@
   align-items: center;
   flex-wrap: wrap;
 }
+.result-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.result-list h1 {
+  font-family: var(--lalezar);
+  font-size: 3rem;
+  color: black;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 auto;;
+}
 .entry{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   width: 45vw;
   height: 10vh;
@@ -93,8 +108,8 @@
   content: "";
   display: block;
   position: absolute;
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   top: 0;
   left: 0;
   border: 2px solid #555555;
@@ -102,18 +117,13 @@
   background-color: white;
 }
 input[type=checkbox]:checked:after {
-  content: "";
+  content: "👊";
   display: block;
-  width: 0.3rem;
-  height: 0.6rem;
-  border: solid black;
-  border-width: 0 2px 2px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+  width: 0.5rem;
+  height: 0.9rem;
   position: absolute;
-  top: 2px;
-  left: 6px;
+  top: 1px;
+  left: 3px;
 }
 .training {
   display: flex;
@@ -260,6 +270,17 @@ input[type=checkbox]:checked:after {
   background-color: white;
 }
 .btn-battle:hover {
+  transition: ease-in-out 0.3s;
+  background-color: salmon;
+}
+.btn-tourney {
+  align-self: center!important;
+  margin: 3rem 0 0 40vw;
+  width: auto;
+  padding: 0.5rem;
+  background-color: white;
+}
+.btn-tourney:hover {
   transition: ease-in-out 0.3s;
   background-color: salmon;
 }

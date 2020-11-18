@@ -1,15 +1,26 @@
 <div class="container-classes">
-  <h1>Results</h1>
+  <h1>Tourney</h1>
   <div class="main-classes">
     <div class="list">
       {{#each trainees}}
         <div class="entry">
           <img src="{{imageUrl}}" alt="{{name}}">
           <h2>{{name}}</h2>
-          <h2>💪 {{strength}}</h2>
-          <h2>🧠 {{dexterity}}</h2>
-          <h2>🛡️ {{stamina}}</h2>
+           <img src="/images/{{level}}.jpg" alt="{{level}}">
+          <h2>💚 {{mana}}</h2>
         </div>
+      {{/each}}
+      <form action="/tourney" method="POST" id="battle">
+        <button class="btn btn-tourney" style="{{hide}}">Start Tourney</button>
+      </form>
+    </div>
+  </div>
+  <div class="main-classes">
+    <div class="result-list">
+      {{#each winner}}
+          <h1>{{name}} wins!</h1>
+          <img src="{{imageUrl}}" alt="{{name}}">
+          <h1>🏆</h1>
       {{/each}}
     </div>
   </div>
@@ -29,4 +40,4 @@
       </a>
     </div>
   </div>
-</div>>
+</div>

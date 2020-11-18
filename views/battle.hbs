@@ -1,21 +1,31 @@
 <div class="container-classes">
-  <h1>choose opponents</h1>
-  <form action="/battle" method="POST">
+  <h1 style="{{hide}}">choose opponents</h1>
+  <form action="/battle" method="POST" id="battle">
+    <div class="main-classes">
+      <div class="list">
+        {{#each opponents}}
+          <div class="entry">
+            <input type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countOppSelected(this)">
+            <img src="{{imageUrl}}" alt="{{name}}">
+            <label for="{{_id}}">{{name}}</label>
+            <img src="/images/{{level}}.jpg" alt="{{level}}">
+  
+            <h2>💚 {{mana}}</h2>
+          </div>
+        {{/each}}
+        <button class="btn btn-battle" onclick="enableBtn()" style="{{hide}}">Start Battle</button>
+      </div>
+    </div>
+  </form>
   <div class="main-classes">
-    <div class="list">
-      {{#each opponents}}
-        <div class="entry">
-          <input type="checkbox" id="{{_id}}" name="{{name}}" value="{{_id}}">
+    <div class="result-list">
+      {{#each winner}}
+          <h1>{{name}} wins!</h1>
           <img src="{{imageUrl}}" alt="{{name}}">
-          <label for="{{_id}}">{{name}}</label>
-          <h2>💚 {{mana}}</h2>
-          <h2>🛡️ {{stamina}}</h2>
-        </div>
+          <h1>🏆</h1>
       {{/each}}
-        <button class="btn btn-battle">Start Battle</button>
     </div>
   </div>
-  </form>
   <div class="menu">
     <div class="card classes">
       <div class="info">
@@ -32,4 +42,4 @@
       </a>
     </div>
   </div>
-</div>>
+</div>
