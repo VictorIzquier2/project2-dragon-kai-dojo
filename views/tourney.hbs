@@ -1,29 +1,22 @@
 <div class="container-classes">
-  <h1>Tourney</h1>
-  <div class="main-classes">
-    <div class="list">
-      {{#each trainees}}
-        <div class="entry">
-          <img src="{{imageUrl}}" alt="{{name}}">
-          <h2>{{name}}</h2>
-           <img src="/images/{{level}}.jpg" alt="{{level}}">
-          <h2>💚 {{mana}}</h2>
-        </div>
-      {{/each}}
-      <form action="/tourney" method="POST" id="battle">
-        <button class="btn btn-tourney" style="{{hide}}">Start Tourney</button>
-      </form>
+  <h1 style="{{hide}}">Tourney</h1>
+  <form action="/tourney" method="POST" id="tourney">
+    <div class="main-classes">
+      <div class="list">
+        {{#each opponents}}
+          <div class="entry">
+            <input type="checkbox" id="{{_id}}" name="_id" checked value="{{_id}}" onchange="countPlayersSelected(this)">
+            <img src="{{imageUrl}}" alt="{{name}}">
+            <label for="{{_id}}">{{name}}</label>
+            <img src="/images/{{level}}.jpg" alt="{{level}}">
+            <h2>💚 {{mana}}</h2>
+          </div>
+        {{/each}}
+        <button class="btn btn-tourney" onclick="enableTBtn()" style="{{hide}}">Start Tourney</button>
+      </div>
+      <span class="warn">You need 16 disciples</span>
     </div>
-  </div>
-  <div class="main-classes">
-    <div class="result-list">
-      {{#each winner}}
-          <h1>{{name}} wins!</h1>
-          <img src="{{imageUrl}}" alt="{{name}}">
-          <h1>🏆</h1>
-      {{/each}}
-    </div>
-  </div>
+  </form>
   <div class="menu">
     <div class="card classes">
       <div class="info">

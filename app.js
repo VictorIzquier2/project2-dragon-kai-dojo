@@ -271,8 +271,8 @@ app.post('/battle/', (req, res, next) => {
 
 app.get('/tourney', (req, res, next) => {
   Karateka.find({}, {name: 1, imageUrl: 1, level: 1, mana: 1})
-    .then((trainees) => {
-      res.render('tourney', {trainees});
+    .then((opponents) => {
+      res.render('tourney', {opponents});
     })
     .catch((err)=> {
       console.log(err);
@@ -281,71 +281,292 @@ app.get('/tourney', (req, res, next) => {
 });
 
 app.post('/tourney', (req, res, next) => {
-  
-  Karateka.aggregate([{
-        $bucketAuto: {
-          groupBy: "$_id",
-          buckets: 6
-        }
-      }])
-    .then((result)=> {
-      result.forEach((couple)=>{
-        const firstOne = () => {
-          return Karateka.findById(couple._id.min)
-        }
-  
-        const secondOne = () => {
-          return Karateka.findById(couple._id.max)
-        }
-        Promise.all([firstOne(), secondOne()])
-          .then((result)=> {
-            const firstStrike = (aggressor, defensor) => {
-              let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
-              let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
-              let defNumberOfDices = defensor.dexterity + defensor.stamina;
-              let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
-              aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
-            };
+  const firstOne = () => Karateka.findById(req.body._id[0])
+  const secondOne = () => Karateka.findById(req.body._id[1])
+  const thirdthOne = () => Karateka.findById(req.body._id[2]);
+  const fourthOne = () => Karateka.findById(req.body._id[3]);
+  const fifthOne = () => Karateka.findById(req.body._id[4]);
+  const sixthOne = () => Karateka.findById(req.body._id[5]);
+  const seventhOne = () => Karateka.findById(req.body._id[6]);
+  const eighthOne = () => Karateka.findById(req.body._id[7]);
+  const ninethOne = () => Karateka.findById(req.body._id[8]);
+  const tenthOne = () => Karateka.findById(req.body._id[9]);
+  const eleventhOne = () => Karateka.findById(req.body._id[10]);
+  const twelvethOne = () => Karateka.findById(req.body._id[11]);
+  const thirteenthOne = () => Karateka.findById(req.body._id[12]);
+  const fourteenthOne = () => Karateka.findById(req.body._id[13]);
+  const fifteenthOne = () => Karateka.findById(req.body._id[14]);
+  const sixteenthOne = () => Karateka.findById(req.body._id[15]);
+    
+    Promise.all([firstOne(), secondOne(), thirdthOne(), fourthOne(), fifthOne(), sixthOne(), seventhOne(), eighthOne(), ninethOne(), tenthOne(), eleventhOne(), twelvethOne(), thirteenthOne(), fourteenthOne(), fifteenthOne(), sixteenthOne()])
+      .then((result)=>{
+        
+        const firstknock = (aggressor, defensor) => {
+          let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
+          let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          let defNumberOfDices = defensor.dexterity + defensor.stamina;
+          let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
+        };
 
-            const strikes = (fighter1, fighter2) => {
-              let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
-              let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
-              fighter1Luky > fighter2Luky ? firstStrike(fighter1, fighter2) : firstStrike(fighter2, fighter1);
-            };
+        const combat = (fighter1, fighter2) => {
+          let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          fighter1Luky > fighter2Luky ? firstknock(fighter1, fighter2) : firstknock(fighter2, fighter1);
+        };
 
-            let winner = [];
-            let loser = [];
+        let vencedores = [];
+        let vencidos = [];
 
-            // The most aggressive strikes first
-            result[0].nature == 'wroth' ? firstStrike(result[0], result[1]) : firstStrike(result[1], result[0]);
+        // The most aggressive strikes first
+        result[0].nature == 'wroth' ? firstknock(result[0], result[8]) : firstknock(result[8], result[0]);
+        // Rest of combat
+        do {combat(result[0], result[8])} while(result[0].mana > 0 && result[8].mana > 0);
 
-            // Rest of combat
-            do {strikes(result[0], result[1])} while(result[0].mana > 0 && result[1].mana > 0);
+        // The most aggressive strikes first
+        result[1].nature == 'wroth' ? firstknock(result[1], result[9]) : firstknock(result[9], result[1]);
+        // Rest of combat
+        do {combat(result[1], result[9])} while(result[1].mana > 0 && result[9].mana > 0);
 
-            // Check Winner
-            result.forEach((opp)=> {
-              if(opp.mana > 0 ){
-                winner.push(opp);
-              }else {
-                loser.push(opp);
-              }
-            })
-            loser.forEach((defeated)=>{
-              let defeatedId = defeated._id;
-              const standingLess = (def) => def.standing > 7 ? def.standing -1 : def.standing;
-              Karateka.findByIdAndUpdate(defeatedId, {standing : standingLess(defeated)})
-              console.log(defeated);
-            })
-            
-          })
+        // The most aggressive strikes first
+        result[2].nature == 'wroth' ? firstknock(result[2], result[10]) : firstknock(result[10], result[2]);
+        // Rest of combat
+        do {combat(result[2], result[10])} while(result[2].mana > 0 && result[10].mana > 0);
+
+        // The most aggressive strikes first
+        result[3].nature == 'wroth' ? firstknock(result[3], result[11]) : firstknock(result[11], result[3]);
+        // Rest of combat
+        do {combat(result[3], result[11])} while(result[3].mana > 0 && result[11].mana > 0);
+
+        // The most aggressive strikes first
+        result[4].nature == 'wroth' ? firstknock(result[4], result[12]) : firstknock(result[12], result[4]);
+        // Rest of combat
+        do {combat(result[4], result[12])} while(result[4].mana > 0 && result[12].mana > 0);
+
+        // The most aggressive strikes first
+        result[5].nature == 'wroth' ? firstknock(result[5], result[13]) : firstknock(result[13], result[5]);
+        // Rest of combat
+        do {combat(result[5], result[13])} while(result[5].mana > 0 && result[13].mana > 0);
+
+        // The most aggressive strikes first
+        result[6].nature == 'wroth' ? firstknock(result[6], result[14]) : firstknock(result[14], result[6]);
+        // Rest of combat
+        do {combat(result[6], result[14])} while(result[6].mana > 0 && result[14].mana > 0);
+
+        // The most aggressive strikes first
+        result[7].nature == 'wroth' ? firstknock(result[7], result[15]) : firstknock(result[15], result[7]);
+        // Rest of combat
+        do {combat(result[7], result[15])} while(result[7].mana > 0 && result[15].mana > 0);
+
+        result.forEach((player)=> {
+          if(player.mana > 0){
+            vencedores.push(player);
+          }else {
+            vencidos.push(player)
+          }
         })
+        
+        vencidos.forEach((vencido)=>{
+          let vencidoId = vencido._id;
+          const standingReduc = (x) => x.standing > 7 ? x.standing - 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencidoId, {standing: standingReduc(vencido)})
+        })
+        vencedores.forEach((vencedor)=> {
+          let vencedorId = vencedor._id;
+          const standingAumen = (x) => x.standing < 10 ? x.standing + 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencedorId, {standing: standingAumen(vencedor)})
+            .then(()=>{
+            })
+          })
+        res.render('firstRound', {vencedores});
       })
-      
-      // Hide TourneyBtn
-      let hide = "display: none";
-      // Render Tourney
-      res.render('tourney', {hide});
-      
+})
+
+app.post('/firstRound', (req, res, next) => {
+
+  const firstOne = () => Karateka.findById(req.body._id[0])
+  const secondOne = () => Karateka.findById(req.body._id[1])
+  const thirdthOne = () => Karateka.findById(req.body._id[2]);
+  const fourthOne = () => Karateka.findById(req.body._id[3]);
+  const fifthOne = () => Karateka.findById(req.body._id[4]);
+  const sixthOne = () => Karateka.findById(req.body._id[5]);
+  const seventhOne = () => Karateka.findById(req.body._id[6]);
+  const eighthOne = () => Karateka.findById(req.body._id[7]);
+    Promise.all([firstOne(), secondOne(), thirdthOne(), fourthOne(), fifthOne(), sixthOne(), seventhOne(), eighthOne()])
+      .then((result)=>{
+        
+        const firstknock = (aggressor, defensor) => {
+          let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
+          let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          let defNumberOfDices = defensor.dexterity + defensor.stamina;
+          let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
+        };
+
+        const combat = (fighter1, fighter2) => {
+          let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          fighter1Luky > fighter2Luky ? firstknock(fighter1, fighter2) : firstknock(fighter2, fighter1);
+        };
+
+        let vencedores = [];
+        let vencidos = [];
+
+        // The most aggressive strikes first
+        result[0].nature == 'wroth' ? firstknock(result[0], result[4]) : firstknock(result[4], result[0]);
+        // Rest of combat
+        do {combat(result[0], result[4])} while(result[0].mana > 0 && result[4].mana > 0);
+
+        // The most aggressive strikes first
+        result[1].nature == 'wroth' ? firstknock(result[1], result[5]) : firstknock(result[5], result[1]);
+        // Rest of combat
+        do {combat(result[1], result[5])} while(result[1].mana > 0 && result[5].mana > 0);
+
+        // The most aggressive strikes first
+        result[2].nature == 'wroth' ? firstknock(result[2], result[6]) : firstknock(result[6], result[2]);
+        // Rest of combat
+        do {combat(result[2], result[6])} while(result[2].mana > 0 && result[6].mana > 0);
+
+        // The most aggressive strikes first
+        result[3].nature == 'wroth' ? firstknock(result[3], result[7]) : firstknock(result[7], result[3]);
+        // Rest of combat
+        do {combat(result[3], result[7])} while(result[3].mana > 0 && result[7].mana > 0);
+
+        result.forEach((player)=> {
+          if(player.mana > 0){
+            vencedores.push(player);
+          }else {
+            vencidos.push(player)
+          }
+        })
+        
+        vencidos.forEach((vencido)=>{
+          let vencidoId = vencido._id;
+          const standingReduc = (x) => x.standing > 7 ? x.standing - 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencidoId, {standing: standingReduc(vencido)})
+        })
+        vencedores.forEach((vencedor)=> {
+          let vencedorId = vencedor._id;
+          const standingAumen = (x) => x.standing < 10 ? x.standing + 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencedorId, {standing: standingAumen(vencedor)})
+            .then(()=>{
+            })
+          })
+        res.render('secondRound', {vencedores});
+      })
+})
+
+app.post('/secondRound', (req, res, next) => {
+
+  const firstOne = () => Karateka.findById(req.body._id[0])
+  const secondOne = () => Karateka.findById(req.body._id[1])
+  const thirdthOne = () => Karateka.findById(req.body._id[2]);
+  const fourthOne = () => Karateka.findById(req.body._id[3]);
+    Promise.all([firstOne(), secondOne(), thirdthOne(), fourthOne()])
+      .then((result)=>{
+        
+        const firstknock = (aggressor, defensor) => {
+          let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
+          let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          let defNumberOfDices = defensor.dexterity + defensor.stamina;
+          let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
+        };
+
+        const combat = (fighter1, fighter2) => {
+          let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          fighter1Luky > fighter2Luky ? firstknock(fighter1, fighter2) : firstknock(fighter2, fighter1);
+        };
+
+        let vencedores = [];
+        let vencidos = [];
+
+        // The most aggressive strikes first
+        result[0].nature == 'wroth' ? firstknock(result[0], result[2]) : firstknock(result[2], result[0]);
+        // Rest of combat
+        do {combat(result[0], result[2])} while(result[0].mana > 0 && result[2].mana > 0);
+
+        // The most aggressive strikes first
+        result[1].nature == 'wroth' ? firstknock(result[1], result[3]) : firstknock(result[3], result[1]);
+        // Rest of combat
+        do {combat(result[1], result[3])} while(result[1].mana > 0 && result[3].mana > 0);
+
+        result.forEach((player)=> {
+          if(player.mana > 0){
+            vencedores.push(player);
+          }else {
+            vencidos.push(player)
+          }
+        })
+        
+        vencidos.forEach((vencido)=>{
+          let vencidoId = vencido._id;
+          const standingReduc = (x) => x.standing > 7 ? x.standing - 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencidoId, {standing: standingReduc(vencido)})
+        })
+        vencedores.forEach((vencedor)=> {
+          let vencedorId = vencedor._id;
+          const standingAumen = (x) => x.standing < 10 ? x.standing + 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencedorId, {standing: standingAumen(vencedor)})
+            .then(()=>{
+            })
+          })
+        res.render('semiFinal', {vencedores});
+      })
+})
+
+app.post('/semiFinal', (req, res, next) => {
+
+  const firstOne = () => Karateka.findById(req.body._id[0])
+  const secondOne = () => Karateka.findById(req.body._id[1])
+    Promise.all([firstOne(), secondOne()])
+      .then((result)=>{
+        
+        const firstknock = (aggressor, defensor) => {
+          let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
+          let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          let defNumberOfDices = defensor.dexterity + defensor.stamina;
+          let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+          aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
+        };
+
+        const combat = (fighter1, fighter2) => {
+          let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+          fighter1Luky > fighter2Luky ? firstknock(fighter1, fighter2) : firstknock(fighter2, fighter1);
+        };
+
+        let vencedores = [];
+        let vencidos = [];
+
+        // The most aggressive strikes first
+        result[0].nature == 'wroth' ? firstknock(result[0], result[1]) : firstknock(result[1], result[0]);
+        // Rest of combat
+        do {combat(result[0], result[1])} while(result[0].mana > 0 && result[1].mana > 0);
+
+        result.forEach((player)=> {
+          if(player.mana > 0){
+            vencedores.push(player);
+          }else {
+            vencidos.push(player)
+          }
+        })
+        
+        vencidos.forEach((vencido)=>{
+          let vencidoId = vencido._id;
+          const standingReduc = (x) => x.standing > 7 ? x.standing - 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencidoId, {standing: standingReduc(vencido)})
+        })
+        vencedores.forEach((vencedor)=> {
+          let vencedorId = vencedor._id;
+          const standingAumen = (x) => x.standing < 10 ? x.standing + 1 : x.standing;
+          Karateka.findByIdAndUpdate(vencedorId, {standing: standingAumen(vencedor)})
+            .then(()=>{
+            })
+          })
+        res.render('final', {vencedores});
+      })
 })
 
 app.get('/city', (req, res, next) => {

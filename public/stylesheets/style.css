@@ -38,7 +38,20 @@
 }
 .main-classes,
 .main-fight {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   height: auto;
+}
+.main-classes span {
+  display: none;
+  font-family: var(--lalezar);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: crimson;
+  text-align: center;
+  align-self: center!important;
 }
 .background-image {
   width: 100%;
@@ -87,6 +100,7 @@
   width: 45vw;
   height: 10vh;
 }
+
 .entry img {
   width: 25%;
   max-width: 7rem;
@@ -243,6 +257,19 @@ input[type=checkbox]:checked:after {
   padding: 0 auto;
 }
 
+#tourney input {
+  display: none;
+}
+#firstRound input {
+  display: none;
+}
+#secondRound input {
+  display: none;
+}
+#semiFinal input {
+  display: none;
+}
+
 .btn {
   font-family: var(--bowlby-font);
   font-size: 1.2rem;
@@ -281,6 +308,40 @@ input[type=checkbox]:checked:after {
   background-color: white;
 }
 .btn-tourney:hover {
+  transition: ease-in-out 0.3s;
+  background-color: salmon;
+}
+.btn-firstRound {
+  align-self: center!important;
+  margin: 3rem 0 0 40vw;
+  width: auto;
+  padding: 0.5rem;
+  background-color: white;
+}
+.btn-firstRound:hover {
+  transition: ease-in-out 0.3s;
+  background-color: salmon;
+}
+
+.btn-secondRound {
+  align-self: center!important;
+  margin: 3rem 0 0 40vw;
+  width: auto;
+  padding: 0.5rem;
+  background-color: white;
+}
+.btn-secondRound:hover {
+  transition: ease-in-out 0.3s;
+  background-color: salmon;
+}
+.btn-semiFinal{
+  align-self: center!important;
+  margin: 3rem 0 0 40vw;
+  width: auto;
+  padding: 0.5rem;
+  background-color: white;
+}
+.btn-semiFinal:hover{
   transition: ease-in-out 0.3s;
   background-color: salmon;
 }
