@@ -1,8 +1,8 @@
 <div class="container-classes">
-  <h1>Class</h1>
+  <h1>Admin</h1>
   <div class="main-classes">
     <div class="list">
-      {{#each trainees}}
+      {{#each senseis}}
       <div class="entry">
         <img src="{{imageUrl}}" alt="{{name}}">
         <h2>{{name}}</h2>
@@ -11,30 +11,33 @@
       {{/each}}
     </div>
   </div>
-  <h1>Training</h1>
+  <h1><!-- Title --></h1>
   <div class="training">
     <div class="card">
       <div class="info">
+        <h3>{{{civilians}}}</h3>
       </div>
-      <img class="card-image" src="/images/train.jpg" alt="outside dojo">
-      <form action="/classes/train" method="POST">
-        <button class="btn btn-primary">Train</button>
+      <img class="card-image" src="/images/crowd.jpg" alt="civilians">
+      <form action="/civilians" method="GET">
+        <button class="btn btn-primary">Civilians</button>
       </form>
     </div>
     <div class="card">
       <div class="info">
+        <h3>{{{karatekas}}}</h3>
       </div>
-      <img class="card-image" src="/images/battle.jpg" alt="outside dojo">
-      <form action="/classes/battle" method="GET">
-        <button class="btn btn-primary">Battle</button>
+      <img class="card-image" src="/images/train.jpg" alt="karatekas">
+      <form action="/karatekas" method="GET">
+        <button class="btn btn-primary">Karatekas</button>
       </form>
     </div>
     <div class="card">
       <div class="info">
+        <h3>{{{masters}}}</h3>
       </div>
       <img class="card-image" src="/images/tourney.jpg" alt="outside dojo">
-      <form action="/classes/tourney" method="GET">
-        <button class="btn btn-primary">Tourney</button>
+      <form action="/masters" method="GET">
+        <button class="btn btn-primary">Masters</button>
       </form>
     </div>
   </div>
@@ -45,10 +48,12 @@
         <h2>Back to Dojo</h2>
       </a>
     </div>
-      <div class="card fight">
-      <a href="/fight">
-        <img class="card-image" src="/images/look-for-fight.jpg" alt="outside dojo">
-        <h2>Look for a fight</h2>
+    <div class="card valley">
+      <div class="info">
+      </div>
+      <a href="/city">
+        <img class="card-image" src="/images/city.jpg" alt="outside dojo">
+        <h2>Go to All Valley</h2>
       </a>
     </div>
   </div>

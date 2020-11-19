@@ -1,20 +1,19 @@
 <div class="container-classes">
-  <h1 style="{{hide}}">First Round</h1>
-  <form action="/firstRound" method="POST" id="firstRound">
+  <h1 style="{{hide}}">Second Round</h1>
+  <form action="/classes/tourney/secondRound" method="POST" id="secondRound">
     <div class="main-classes">
       <div class="list">
         {{#each vencedores}}
             <div class="entry">
-            <input type="checkbox" id="{{_id}}" name="_id" checked value="{{_id}}" onchange="countPlayersFRSelected(this)">
+            <input type="checkbox" id="{{_id}}" name="_id" checked value="{{_id}}" onchange="countPlayersSRSelected(this)">
             <img src="{{imageUrl}}" alt="{{name}}">
             <label for="{{_id}}">{{name}}</label>
             <img src="/images/{{level}}.jpg" alt="{{level}}">
             <h2>💚 {{mana}}</h2>
           </div>
         {{/each}}
-        <button class="btn btn-firstRound" onclick="enableFRBtn()" style="{{hide}}">Second Round</button>
+        <button class="btn btn-secondRound" onclick="enableSRBtn()" style="{{hide}}">Semi Final</button>
       </div>
     </div>
   </form>
 </div>
-

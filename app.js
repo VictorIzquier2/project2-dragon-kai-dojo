@@ -72,6 +72,25 @@ app.get('/', (req, res, next) => {
     res.render('index');
   });
 
+app.get('/admin', (req, res, next) => {
+
+  Civilian.countDocuments()
+    .then((civilians) => {
+      Karateka.countDocuments()
+        .then((karatekas) => {
+          Master.countDocuments()
+            .then((masters) => {
+              Sensei.countDocuments()
+                .then((senseis) => {
+                  res.render('admin', {civilians, karatekas, masters, senseis});
+                })
+            })
+        })
+    })
+});
+
+
+
 app.get('/main', (req, res, next) => {
 
   Karateka.countDocuments()
@@ -98,7 +117,7 @@ app.get('/classes', (req, res, next) => {
     })
 });
 
-app.post('/train', (req, res, next) => {
+app.post('/classes/train', (req, res, next) => {
 
     const levelUpStrength = (trainee) => {
       let levelUp = 0;
@@ -183,7 +202,7 @@ app.post('/train', (req, res, next) => {
           const newStamina = trainee.stamina += levelUpStamina(trainee);
           Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina})
         })
-        res.render('train', {trainees})
+        res.render('classes/train', {trainees})
 
       })
       .catch((err)=> {
@@ -191,17 +210,17 @@ app.post('/train', (req, res, next) => {
       })
   });
 
-app.get('/battle', (req, res, next) => {
+app.get('/classes/battle', (req, res, next) => {
   Karateka.find({}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, standing: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
       .then((opponents) => {
-        res.render('battle', ({opponents}))
+        res.render('classes/battle', ({opponents}))
       })
       .catch((err)=> {
         console.log(err);
       })
 });
 
-app.post('/battle/', (req, res, next) => {
+app.post('/classes/battle/', (req, res, next) => {
     const findFirstOne = () => {
       return Karateka.findById(req.body._id[0])
     }
@@ -255,7 +274,7 @@ app.post('/battle/', (req, res, next) => {
                     // Hide BattleBtn and Choose Opponents
                     let hide = "display: none"; 
                     // Render Winner
-                    res.render('battle', {winner, hide});
+                    res.render('classes/battle', {winner, hide});
                   })
               })
           })
@@ -269,10 +288,10 @@ app.post('/battle/', (req, res, next) => {
 
 })
 
-app.get('/tourney', (req, res, next) => {
+app.get('/classes/tourney', (req, res, next) => {
   Karateka.find({}, {name: 1, imageUrl: 1, level: 1, mana: 1})
     .then((opponents) => {
-      res.render('tourney', {opponents});
+      res.render('classes/tourney', {opponents});
     })
     .catch((err)=> {
       console.log(err);
@@ -280,7 +299,7 @@ app.get('/tourney', (req, res, next) => {
     });
 });
 
-app.post('/tourney', (req, res, next) => {
+app.post('/classes/tourney', (req, res, next) => {
   const firstOne = () => Karateka.findById(req.body._id[0])
   const secondOne = () => Karateka.findById(req.body._id[1])
   const thirdthOne = () => Karateka.findById(req.body._id[2]);
@@ -378,11 +397,11 @@ app.post('/tourney', (req, res, next) => {
             .then(()=>{
             })
           })
-        res.render('firstRound', {vencedores});
+        res.render('classes/tourney/firstRound', {vencedores});
       })
 })
 
-app.post('/firstRound', (req, res, next) => {
+app.post('/classes/tourney/firstRound', (req, res, next) => {
 
   const firstOne = () => Karateka.findById(req.body._id[0])
   const secondOne = () => Karateka.findById(req.body._id[1])
@@ -452,11 +471,11 @@ app.post('/firstRound', (req, res, next) => {
             .then(()=>{
             })
           })
-        res.render('secondRound', {vencedores});
+        res.render('classes/tourney/secondRound', {vencedores});
       })
 })
 
-app.post('/secondRound', (req, res, next) => {
+app.post('/classes/tourney/secondRound', (req, res, next) => {
 
   const firstOne = () => Karateka.findById(req.body._id[0])
   const secondOne = () => Karateka.findById(req.body._id[1])
@@ -512,11 +531,11 @@ app.post('/secondRound', (req, res, next) => {
             .then(()=>{
             })
           })
-        res.render('semiFinal', {vencedores});
+        res.render('classes/tourney/semiFinal', {vencedores});
       })
 })
 
-app.post('/semiFinal', (req, res, next) => {
+app.post('/classes/tourney/semiFinal', (req, res, next) => {
 
   const firstOne = () => Karateka.findById(req.body._id[0])
   const secondOne = () => Karateka.findById(req.body._id[1])
@@ -565,7 +584,7 @@ app.post('/semiFinal', (req, res, next) => {
             .then(()=>{
             })
           })
-        res.render('final', {vencedores});
+        res.render('classes/tourney/final', {vencedores});
       })
 })
 
