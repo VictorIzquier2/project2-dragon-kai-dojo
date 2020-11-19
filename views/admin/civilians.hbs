@@ -1,0 +1,45 @@
+<div class="container-classes">
+  <h1>Civilians</h1>
+  <form action="/admin/civilians" method="POST" id="battle">
+    <div class="main-classes">
+      <div class="list">
+        {{#each civilians}}
+        <div class="entry">
+          <input type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countOppSelected(this)">
+            <img src="{{imageUrl}}" alt="{{name}}">
+          <a href="/admin/civilians/{{_id}}">🔎 </a>
+          <label for="{{_id}}">{{name}}</label>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </form>
+  <h1><!-- Title --></h1>
+  <div class="training">
+    <div class="card">
+      <div class="info">
+        <h3>{{{civiliansNumber}}}</h3>
+      </div>
+      <img class="card-image" src="/images/crowd.jpg" alt="civilians">
+      <form action="/admin/civilians" method="POST">
+        <button class="btn btn-primary">Create</button>
+      </form>
+    </div>
+  </div>
+  <div class="menu">
+    <div class="card valley">
+      <div class="info">
+      </div>
+      <a href="/admin">
+        <img class="card-image" src="/images/city.jpg" alt="admin">
+        <h2>Back to Admin</h2>
+      </a>
+    </div>
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+  </div>
+</div>

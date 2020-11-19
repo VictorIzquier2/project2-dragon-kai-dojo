@@ -7,6 +7,7 @@
         <img src="{{imageUrl}}" alt="{{name}}">
         <h2>{{name}}</h2>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
+         <h1>🏆 {{standing}}</h1>
       </div>
       {{/each}}
     </div>
@@ -18,7 +19,7 @@
         <h3>{{{civilians}}}</h3>
       </div>
       <img class="card-image" src="/images/crowd.jpg" alt="civilians">
-      <form action="/civilians" method="GET">
+      <form action="/admin/civilians" method="GET">
         <button class="btn btn-primary">Civilians</button>
       </form>
     </div>
@@ -27,7 +28,7 @@
         <h3>{{{karatekas}}}</h3>
       </div>
       <img class="card-image" src="/images/train.jpg" alt="karatekas">
-      <form action="/karatekas" method="GET">
+      <form action="/admin/karatekas" method="GET">
         <button class="btn btn-primary">Karatekas</button>
       </form>
     </div>
@@ -36,7 +37,7 @@
         <h3>{{{masters}}}</h3>
       </div>
       <img class="card-image" src="/images/tourney.jpg" alt="outside dojo">
-      <form action="/masters" method="GET">
+      <form action="/admin/masters" method="GET">
         <button class="btn btn-primary">Masters</button>
       </form>
     </div>

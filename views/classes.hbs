@@ -1,6 +1,16 @@
 <div class="container-classes">
-  <h1>Class</h1>
   <div class="main-classes">
+    <h1 class="sensei-h1">Sensei</h1>
+    <div class="list">
+      {{#each sensei}}
+      <div class="entry">
+        <img class="sensei-img" src="{{imageUrl}}" alt="{{name}}">
+        <h2 class="sensei-h2">{{name}}</h2>
+        <img class="sensei-img" src="/images/{{level}}.jpg" alt="{{level}}">
+      </div>
+      {{/each}}
+    </div>
+    <h1>Class</h1>
     <div class="list">
       {{#each trainees}}
       <div class="entry">

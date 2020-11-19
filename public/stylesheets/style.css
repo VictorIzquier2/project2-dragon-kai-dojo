@@ -28,6 +28,9 @@
   color: crimson;
   text-align: center;
 }
+.sensei-h1 {
+  font-size: 4rem!important;
+}
 .main {
   display: flex;
   justify-content: space-around;
@@ -105,6 +108,14 @@
   width: 25%;
   max-width: 7rem;
 }
+.entry .sensei-img {
+  width: 50%;
+  max-width: 14rem;
+}
+.entry a {
+  text-decoration: none;
+  font-size: 1.2rem;
+}
 .entry h2,
 .entry label {
   font-family: var(--lalezar);
@@ -113,6 +124,9 @@
   text-align: center;
   margin: 0 auto;
   padding: 0 auto;
+}
+.entry .sensei-h2 {
+  font-size: 3rem;
 }
 .entry input[type='checkbox'] {
   position: relative;

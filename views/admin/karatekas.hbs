@@ -1,0 +1,34 @@
+<div class="container-classes">
+  <h1>Karatekas</h1>
+  <div class="main-classes">
+    <div class="list">
+      {{#each karatekas}}
+       <div class="entry">
+        <input type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countOppSelected(this)">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <label for="{{_id}}">{{name}}</label>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+        <h2>🏆 {{standing}}</h2>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  <h1><!-- Title --></h1>
+
+  <div class="menu">
+    <div class="card valley">
+      <div class="info">
+      </div>
+      <a href="/admin">
+        <img class="card-image" src="/images/city.jpg" alt="admin">
+        <h2>Back to Admin</h2>
+      </a>
+    </div>
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+  </div>
+</div>
