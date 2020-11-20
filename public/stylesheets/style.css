@@ -94,7 +94,7 @@
   text-transform: uppercase;
   text-align: center;
   margin: 0 auto;
-  padding: 0 auto;;
+  padding: 0 auto;
 }
 .entry{
   display: flex;
@@ -102,6 +102,47 @@
   align-items: center;
   width: 45vw;
   height: 10vh;
+}
+.list .entry-form{
+  font-family: var(--lalezar);
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 75%;
+  margin: 0 1rem;
+  padding: 0 1rem;
+  height: 5vh;
+  flex-grow: 0;
+}
+.list .entry-form h2  {
+  text-align: justify;
+  width: 25vw;
+}
+.list .entry-form label img{
+  height: 6vh;
+  margin-right: 15vw;
+  flex-grow: 0;
+}
+
+.list .entry-form input[type='checkbox']{
+  display:none;
+}
+.list .entry-form input[type='text'] {
+  font-family: var(--lalezar);
+  font-weight: lighter;
+  font-size: 1rem;
+  width: 20rem;
+  justify-self: flex-end;
+  flex-grow: 0;
+  padding-left: 1rem;
+}
+.list .entry-form select {
+  font-family: var(--lalezar)!important;
+  width: 21.5rem;
+  justify-self: flex-end;
+  flex-grow: 0;
 }
 
 .entry img {
@@ -153,10 +194,32 @@ input[type=checkbox]:checked:after {
   top: 1px;
   left: 3px;
 }
+.input-civilian {
+  display: none;
+}
+.input-karatekas {
+  display: none;
+}
+.input-masters {
+  display: none;
+}
+.entry .edit,
+.entry .delete {
+  text-decoration: none;
+  font-size: 1.2rem;
+  margin: 0 0.5rem;
+}
+.entry .edit .fa-edit
+{
+  color: black;
+}
+.entry .delete .fa-trash {
+  color: salmon;
+}
 .training {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
   min-height: 15rem;
   margin: 1rem;
@@ -208,7 +271,7 @@ input[type=checkbox]:checked:after {
 .menu{
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   width: 100%;
   display: flex;
   justify-content: space-evenly;

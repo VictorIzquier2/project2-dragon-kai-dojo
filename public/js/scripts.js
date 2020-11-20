@@ -26,8 +26,8 @@ const enableBtn = () => {
 }
 
 // TOURNEY
-//TWO opponents only
-let playersSelected = 16;
+// 16 opponents only
+let playersSelected = document.getElementsByClassName('entry').length;
 const countPlayersSelected = (checkbox) => {
   if(checkbox.checked == false){
     playersSelected--;
@@ -96,7 +96,7 @@ const countPlayersSRSelected = (checkbox) => {
 // Enable START TOURNEY BUTTON
 const secondRoundBtn = document.querySelector('.btn-secondRound');
 const enableSRBtn = () => {
-  if(playersSelected < 8){
+  if(playersSRSelected < 4){
     secondRoundBtn.setAttribute('disabled', false);
     setTimeout(()=>{
       secondRoundBtn.removeAttribute('disabled');
@@ -105,12 +105,12 @@ const enableSRBtn = () => {
 }
 
 // SEMIFINAL
-let playersSFSelected = 4;
+let playersSFSelected = 2;
 const countPlayersSFSelected = (checkbox) => {
   if(checkbox.checked == false){
     playersSFSelected--;
   }
-  if(checkbox.checked == true && playersSFSelected < 4){
+  if(checkbox.checked == true && playersSFSelected < 2){
     playersSFSelected++;
   }else{
     checkbox.checked = false;
@@ -121,7 +121,7 @@ const countPlayersSFSelected = (checkbox) => {
 // Enable START TOURNEY BUTTON
 const semiFinalBtn = document.querySelector('.btn-semiFinal');
 const enableSFBtn = () => {
-  if(playersSelected < 4){
+  if(playersSelected < 2){
     semiFinalBtn.setAttribute('disabled', false);
     setTimeout(()=>{
       semiFinalBtn.removeAttribute('disabled');

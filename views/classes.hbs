@@ -2,7 +2,7 @@
   <div class="main-classes">
     <h1 class="sensei-h1">Sensei</h1>
     <div class="list">
-      {{#each sensei}}
+      {{#each senseis}}
       <div class="entry">
         <img class="sensei-img" src="{{imageUrl}}" alt="{{name}}">
         <h2 class="sensei-h2">{{name}}</h2>
@@ -12,7 +12,16 @@
     </div>
     <h1>Class</h1>
     <div class="list">
-      {{#each trainees}}
+      {{#each masters}}
+      <div class="entry">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <h2>{{name}}</h2>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+      </div>
+      {{/each}}
+    </div>
+    <div class="list">
+      {{#each karatekas}}
       <div class="entry">
         <img src="{{imageUrl}}" alt="{{name}}">
         <h2>{{name}}</h2>

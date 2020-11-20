@@ -1,27 +1,14 @@
 <div class="container-classes">
-  <div class="main-classes">
-    <div class="result-list">
-      {{#each vencedores}}
+  <form action="/classes/tourney/final" method="POST">
+    <div class="main-classes">
+      <div class="result-list">
+        {{#each vencedores}}
           <h1>{{name}} wins!</h1>
           <img src="{{imageUrl}}" alt="{{name}}">
           <h1>🏆{{standing}}</h1>
-      {{/each}}
-    </div>
-  </div>
-  <div class="menu">
-    <div class="card classes">
-      <div class="info">
+        {{/each}}
+          <button class="btn btn-final">Back</button>
       </div>
-      <a href="/classes">
-        <img class="card-image" src="/images/class.jpg" alt="Martial Art Class">
-        <h2>Back to Classes</h2>
-      </a>
     </div>
-    <div class="card dojo">
-      <a href="/main">
-        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
-        <h2>Back to Dojo</h2>
-      </a>
-    </div>
-  </div>
+  </form>
 </div>

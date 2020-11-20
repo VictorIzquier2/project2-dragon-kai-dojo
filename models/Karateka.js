@@ -11,7 +11,7 @@ const karatekaSchema = new Schema({
   dexterity: {type: Number, min: 1, max: 5, default: 2},
   stamina: {type: Number, min: 1, max: 5, default: 2},
   mana: {type: Number, min: 1, max: 5, default: 2},
-  standing: {type: Number, min: 0, max: 25, default: 0},
+  standing: {type: Number, min: 0, max: 29, default: 0},
   imageUrl: {type: String}
 });
 
