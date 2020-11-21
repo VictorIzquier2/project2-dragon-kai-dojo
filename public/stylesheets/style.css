@@ -11,7 +11,7 @@
 }
 
 .container {
-  height: 100vh;
+  height: 85vh;
   max-height: 100vh;
   width: 100vw;
 }
@@ -27,6 +27,23 @@
   font-weight: bold;
   color: crimson;
   text-align: center;
+}
+.header {
+  display: flex;
+  flex-direction: column;
+}
+.header a {
+  text-decoration: none;
+  align-self: flex-end;
+  margin: 0 1rem;
+}
+.header a h2 {
+  font-family: var(--lalezar);
+  font-size: 1.2rem;
+  color: black;
+  text-transform: uppercase;
+  margin: 0 auto;
+  padding: 0 auto;
 }
 .sensei-h1 {
   font-size: 4rem!important;
@@ -339,6 +356,14 @@ input[type=checkbox]:checked:after {
   font-family: var(--lalezar);
   font-size: 1rem;
   color: midnightblue;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 auto;
+}
+.card p {
+  font-family: var(--lalezar);
+  font-size: 1rem;
+  color: salmon;
   text-align: center;
   margin: 0 auto;
   padding: 0 auto;

@@ -1,17 +1,23 @@
 <div class="container">
+  <div class="header">
+    <a href="/log-out"><h2>Log-out</h2></a>
+  </div>
   <div class="main">
     <div class="vista">
       <h1>All Valley</h1>
       <img class="background-image" src="/images/city.jpg" alt="city">
     </div>
     <div class="aside">
-      <div class="card debs">
+      <div class="card">
         <h2>Debs</h2>
-        <h1>{{{count}}}</h1>
+        <h1 id="civ-counter">{{{count}}}</h1>
         <img class="card-image" src="/images/crowd.jpg" alt="crowd">
         <form action="/city" method="POST">
-          <button class="btn btn-primary">recruit</button>
+          <button id="civ-recruit" class="btn btn-primary" onchange="enableRecruitCivBtn(this)">recruit</button>
         </form>
+        {{#if errorMessage}}
+           <p>{{errorMessage}}</p>
+        {{/if}}
       </div>
     </div>
   </div>

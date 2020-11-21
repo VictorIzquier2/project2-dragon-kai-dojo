@@ -1,6 +1,24 @@
-// Battle //
+//// DOJO ////
 
-//TWO opponents only
+// enable RECRUIT button
+const masterCounter = document.querySelector('#master-counter');
+let masterCounterNumber;
+if(masterCounter){
+  masterCounterNumber = parseInt(masterCounter.innerText);
+  const recruitMasterBtn = document.querySelector('#master-recruit');
+  const enableRecruitMasterBtn = (btn) => {
+    if(masterCounterNumber < 1){
+      btn.setAttribute('disabled', false);
+    }
+  }
+  enableRecruitMasterBtn(recruitMasterBtn);
+}
+
+//// CLASSES ////
+
+// BATTLE //
+
+// 2 opponents only
 let oppSelected = 0;
 const countOppSelected = (checkbox) => {
   if(checkbox.checked == false){
@@ -25,7 +43,8 @@ const enableBtn = () => {
   }
 }
 
-// TOURNEY
+// TOURNEY //
+
 // 16 opponents only
 let playersSelected = document.getElementsByClassName('entry').length;
 const countPlayersSelected = (checkbox) => {
@@ -40,7 +59,7 @@ const countPlayersSelected = (checkbox) => {
   return playersSelected;
 }
 
-// Enable START TOURNEY BUTTON
+// Enable START tourney button
 const starTourneyBtn = document.querySelector('.btn-tourney');
 const tourneyWarn = document.querySelector('.warn');
 const enableTBtn = () => {
@@ -54,7 +73,9 @@ const enableTBtn = () => {
   }
 }
 
-// FIRST ROUND
+// FIRST ROUND //
+
+// 8 opponents only
 let playersFRSelected = 8;
 const countPlayersFRSelected = (checkbox) => {
   if(checkbox.checked == false){
@@ -68,7 +89,7 @@ const countPlayersFRSelected = (checkbox) => {
   return playersFRSelected;
 }
 
-// Enable START TOURNEY BUTTON
+// Enable SECOND ROUND button
 const firstRoundBtn = document.querySelector('.btn-firstRound');
 const enableFRBtn = () => {
   if(playersSelected < 8){
@@ -79,7 +100,9 @@ const enableFRBtn = () => {
   }
 }
 
-// SECOND ROUND
+// SECOND ROUND //
+
+// 4 opponents only
 let playersSRSelected = 4;
 const countPlayersSRSelected = (checkbox) => {
   if(checkbox.checked == false){
@@ -93,7 +116,7 @@ const countPlayersSRSelected = (checkbox) => {
   return playersSRSelected;
 }
 
-// Enable START TOURNEY BUTTON
+// Enable SEMI FINAL button
 const secondRoundBtn = document.querySelector('.btn-secondRound');
 const enableSRBtn = () => {
   if(playersSRSelected < 4){
@@ -104,7 +127,9 @@ const enableSRBtn = () => {
   }
 }
 
-// SEMIFINAL
+// SEMIFINAL //
+
+// 2 opponents only
 let playersSFSelected = 2;
 const countPlayersSFSelected = (checkbox) => {
   if(checkbox.checked == false){
@@ -118,7 +143,7 @@ const countPlayersSFSelected = (checkbox) => {
   return playersSFSelected;
 }
 
-// Enable START TOURNEY BUTTON
+// Enable FINAL button
 const semiFinalBtn = document.querySelector('.btn-semiFinal');
 const enableSFBtn = () => {
   if(playersSelected < 2){
@@ -129,4 +154,18 @@ const enableSFBtn = () => {
   }
 }
 
+//// CITY ////
 
+// enable RECRUIT button
+const civCounter = document.querySelector('#civ-counter');
+let civCounterNumber;
+if(civCounter){
+  const civCounterNumber = parseInt(civCounter.innerText);
+  const recruitCivBtn = document.querySelector('#civ-recruit');
+  const enableRecruitCivBtn = (btn) => {
+    if(civCounterNumber < 1){
+      btn.setAttribute('disabled', false);
+    }
+  }
+  enableRecruitCivBtn(recruitCivBtn);
+}
