@@ -1,22 +1,27 @@
 // REQUIRES
-const chalk = require('chalk');
-const dotenv = require('dotenv');
-const express = require('express');
+const dotenv     = require('dotenv');
+const express    = require('express');
+const chalk      = require('chalk');
 const bodyParser = require('body-parser');
-const hbs = require('hbs');
-const mongoose = require('mongoose');
-
+const hbs        = require('hbs');
+const mongoose   = require('mongoose');
+const bcrypt     = require('bcrypt');
+const session    = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 // CONSTANTS
 const app = express();
+const salt = bcrypt.genSaltSync(process.env.SALTROUNDS);
 
 // MODELS
 const Civilian = require('./models/Civilian.js');
 const Karateka = require('./models/Karateka.js');
 const Master = require('./models/Master.js');
 const Sensei = require('./models/Sensei.js');
+const User = require('./models/User.js');
 const { level } = require('chalk');
 const { findOneAndUpdate } = require('./models/Civilian.js');
+
 // .env CONFIG
 dotenv.config();
 
@@ -66,7 +71,19 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 
-// ROUTES
+// cookies CONFIG
+app.use(session({
+  secret: "basic-auth-secret",
+  // cookie: { maxAge: 60000 },
+  saveUninitialized: true,
+  resave: true,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
+  })
+}));
+
+// -- ROUTES -- 
 app.get('/', (req, res, next) => {
 
     res.render('index');
@@ -82,8 +99,9 @@ app.get('/admin', (req, res, next) => {
         .then((karatekas) => {
           Master.countDocuments()
             .then((masters) => {
-              Sensei.countDocuments()
+              Sensei.find({}, {name: 1, level: 1, standing: 1, imageUrl: 1})
                 .then((senseis) => {
+                  console.log(senseis)
                   res.render('admin', {civilians, karatekas, masters, senseis});
                 })
             })
@@ -330,15 +348,83 @@ app.post('/admin/masters', (req, res, next) => {
 
 // USER
 
-app.get('/main', (req, res, next) => {
+app.get('/sign-up', (req, res, next) => {
+  res.render('sign-up');
+});
 
+app.post('/sign-up', (req, res, next) => {
+  const {email, password} = req.body;
+
+  User.findOne({email: email})
+    .then((result) => {
+      if(!result){
+        bcrypt.genSalt(process.env.SALTROUNDS)
+          .then((salt) => {
+            bcrypt.hash(password, salt)
+            .then((hashedPassword)=> {
+              const hashedUser = {email: email, password: hashedPassword}
+  
+              User.create(hashedUser)
+                .then(() => {
+                  res.redirect('/main');
+                })
+            })
+          })
+          .catch((err) => {
+            res.send(err);
+          })
+      }else {
+        res.render('log-in', {errorMessage: 'El usuario ya existe. Prueba a hacer log-in'})
+      }
+    })
+})
+
+app.get('/log-in', (req, res, next) => {
+  res.render('log-in');
+})
+
+app.post('/log-in', (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({email: email})
+    .then((result) => {
+      if(!result){
+        res.render('log-in', {errorMessage: 'Usuario no encontrado'})
+      }else {
+        bcrypt.compare(password, result.password)
+          .then((resultFromBcrypt) => {
+            if(resultFromBcrypt){
+              req.session.currentUser = email;
+              console.log(req.session);
+              res.redirect('/main');
+            }else{
+              res.render('log-in', {errorMessage: 'La contraseña es incorrecta. Vuelve a intentarlo'})
+            }
+          })
+      }
+    })
+})
+
+app.use((req, res, next) => {
+  if(req.session.currentUser){
+    next();
+  } else {
+    res.redirect('/log-in');
+  }
+})
+
+// MAIN
+
+app.get('/main', (req, res, next) => {
+  
   Karateka.countDocuments()
-    .then((trainees) => {
-      Civilian.countDocuments()
-        .then((debs) => {
-          Master.countDocuments()
-            .then((masters) => {
-            res.render('main', {trainees, debs, masters});
+  .then((trainees) => {
+    Civilian.countDocuments()
+    .then((debs) => {
+      Master.countDocuments()
+      .then((masters) => {
+            res.render('main', {session: req.session.currentUser, trainees, debs, masters});
             })
         })
     })
@@ -351,8 +437,6 @@ app.post('/main', (req, res, next) => {
   const master = Master
     .findOne(masterId)
     .then((master)=>{
-      console.log(master);
-
       const sensei = () => {
 
         const senseiName = () => master.name;
@@ -379,35 +463,47 @@ app.post('/main', (req, res, next) => {
           mana: senseiMana(),
           standing: senseiStanding(),
           imageUrl: senseiImageUrl(),
+          owner: req.session.currentUser
         })
         return newSensei;
       }
-
       Sensei.create(sensei())
-        .then((sensei) => {
-          console.log(sensei);
-          Master.countDocuments()
-            .then((count) => {
-              console.log(`There are ${count} debs`)
-              res.render('main', {count});
+        .then((createdSensei) => {
+          User.updateOne({email: req.session.currentUser}, {$push: {sensei: createdSensei._id}})
+            .then(() => {
+              Master.deleteOne(masterId)
+                .then(()=>{
+                  Master.countDocuments()
+                    .then((count) => {
+                      res.render('main', {count});
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      res.send("Error a contabilizar a los maestros");
+                    })
+                })
+                .catch((err)=>{
+                  console.log(err);
+                  res.send("Error al eliminar al maestro disponible de la lista de maestros");
+                })  
+            })
+            .catch((err) => {
+              console.log(err);
+              res.send("Error al pushear al nuevo sensei dentro del usuario");
             })
         })
         .catch((err) => {
           console.log(err);
+          res.send("Error creando al nuevo sensei");
         })
-        
-      })
-      .catch((err)=> {
-        console.log(err);
-      });
-      Master.deleteOne(masterId)
-      .then((master)=>{
-        console.log(master);
-      })
-      .catch((err)=>{
-        console.log(err);
-      })  
+    })
+    .catch((err)=> {
+      console.log(err);
+      res.send("Error localizando al maestro");
+    });
 })
+
+// CLASSES
 
 app.get('/classes', (req, res, next) => {
   Sensei.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
@@ -971,6 +1067,8 @@ app.post('/classes/tourney/final', (req, res, next) => {
   })
 });
 
+// CITY
+
 app.get('/city', (req, res, next) => {
   
   Civilian.countDocuments()
@@ -1017,32 +1115,41 @@ app.post('/city', (req, res, next) => {
           mana: 1,
           standing: 5,
           imageUrl: karatekaImageUrl(),
+          owner: req.session.currentUser
         })
         return newKarateka;
       }
 
       Karateka.create(trainee())
-        .then((trainee) => {
-          console.log(trainee);
-          Karateka.countDocuments()
-            .then((count) => {
-              console.log(`There are ${count} debs`)
-              res.render('main', {count});
+        .then(() => {
+          Civilian.deleteOne(civId)
+            .then(() => {
+              Karateka.countDocuments()
+                .then((count) => {
+                  res.render('main', {count});
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.send("Error al renderizar main con el nuevo alumno");
+                });
+            })
+            .catch((err)=>{
+              console.log(err);
+              res.send("Error al borrar al antiguo ciudadano");
             })
         })
         .catch((err) => {
           console.log(err);
+          res.send("Error creando al nuevo alumno");
         })
-        
-      })
-      .catch((err)=> {
-        console.log(err);
-      });
-      Civilian.deleteOne(civId)
-      .catch((err)=>{
-        console.log(err);
-      })
+    })
+    .catch((err)=> {
+      console.log(err);
+      res.send("Error buscando al ciudadano");
+    });
 })
+
+// FIGHT
 
 app.get('/fight', (req, res, next) => {
   Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
@@ -1056,6 +1163,8 @@ app.get('/fight', (req, res, next) => {
       console.log(err);
     })
 });
+
+// -- END ROUTES --
 
 // LISTENER
 app.listen(process.env.PORT, () => {

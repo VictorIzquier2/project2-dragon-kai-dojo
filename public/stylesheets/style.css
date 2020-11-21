@@ -129,6 +129,8 @@
 .list .entry-form input[type='checkbox']{
   display:none;
 }
+.list .entry-form input[type='email'],
+.list .entry-form input[type='password'],
 .list .entry-form input[type='text'] {
   font-family: var(--lalezar);
   font-weight: lighter;
@@ -329,6 +331,14 @@ input[type=checkbox]:checked:after {
   font-family: var(--lalezar);
   font-size: 1.5rem;
   text-transform: uppercase;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 auto;
+}
+.card h5 {
+  font-family: var(--lalezar);
+  font-size: 1rem;
+  color: midnightblue;
   text-align: center;
   margin: 0 auto;
   padding: 0 auto;

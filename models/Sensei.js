@@ -12,7 +12,8 @@ const senseiSchema = new Schema({
   stamina: {type: Number, min: 1, max: 5, default: 2},
   mana: {type: Number, min: 1, max: 10, default: 2},
   standing: {type: Number, min: 30, max: 100, default: 30},
-  imageUrl: {type: String, default: '/images/male1.jpg'}
+  imageUrl: {type: String, default: '/images/male1.jpg'},
+  owner: {type: String}
 });
 
 const Sensei = mongoose.model('Sensei', senseiSchema);
