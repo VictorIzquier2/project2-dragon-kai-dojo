@@ -2,18 +2,22 @@
   <h1 class="sensei-h1">Ranking</h1>
   <div class="main-classes">
     <h1><!-- --></h1>
-    <ol id="ranking" class="list">
+    <div id="ranking" class="list">
       {{#each sensei}}
-      <li class="entry entry-ranking">
+      <div class="entry ranking">
         <h2 class="position"></h2>
         <img src="{{this.imageUrl}}" alt="{{this.name}}">
-        <h2>{{this.name}}</h2>
-        <h2 class="user">{{this.owner.username}}</h2>
-        <img src="/images/{{this.level}}.jpg" alt="{{this.level}}">
+        <div class="rank-info">
+          <h4>{{this.name}}</h4>
+          <div class="frame">
+            <img class="level" src="/images/{{this.level}}.jpg" alt="{{this.level}}">
+          </div>
+          <h4 class="user">{{this.owner.username}}</h4>
+        </div>
          <h2>🏆 {{this.standing}}</h2>
-      </li>
+      </div>
       {{/each}}
-    </ol>
+    </div>
   </div>
   <h1><!-- Title --></h1>
   <div class="menu">

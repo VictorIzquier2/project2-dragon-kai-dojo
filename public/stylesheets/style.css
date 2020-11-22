@@ -45,14 +45,16 @@ p {
 }
 
 .container {
-  height: 85vh;
+  height: 90vh;
   max-height: 100vh;
-  width: 100vw;
+  width: 90vw;
 }
 .container-classes,
 .container-fight {
   height: auto;
   max-height: auto;
+  width: 90vw;
+
 }
 .container-classes h1,
 .container-fight h1 {
@@ -121,7 +123,7 @@ p {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   flex-wrap: wrap;
 }
 .result-list {
@@ -129,6 +131,9 @@ p {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+}
+.result-list img {
+  width: 90vw;
 }
 
 .entry{
@@ -138,13 +143,32 @@ p {
   width: 45vw;
   height: 10vh;
 }
-.entry-ranking{
+.ranking{
   justify-content: space-between;
   align-items: center;
   width: 90vw;
   height: 15vh;
 }
-.entry-ranking .user{
+.entry-ranking .rank-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.rank-info .frame .level{
+  width: 33%;
+  margin: 0 auto;
+  justify-self: center!important;
+  align-self: center!important;
+}
+.rank-info .user{
   margin: 0 1rem;
   color: midnightblue;
   text-transform: capitalize;
@@ -158,7 +182,7 @@ p {
   justify-content: space-around;
   align-items: center;
   width: 75%;
-  margin: 0 1rem;
+  margin: 0.125rem 1rem;
   padding: 0 1rem;
   height: 5vh;
   flex-grow: 0;
@@ -172,6 +196,9 @@ p {
   margin-right: 15vw;
   flex-grow: 0;
 }
+.list .entry-form label h4{
+  text-transform: capitalize;
+}
 
 .list .entry-form input[type='checkbox']{
   display:none;
@@ -182,10 +209,14 @@ p {
   font-family: var(--lalezar);
   font-weight: lighter;
   font-size: 1rem;
-  width: 20rem;
+  width: 40vw;
   justify-self: flex-end;
   flex-grow: 0;
+  margin-left: 1rem;
   padding-left: 1rem;
+}
+.list .entry-form input[type='email']{
+  margin-left: 3.3rem;
 }
 .list .entry-form select {
   font-family: var(--lalezar)!important;
@@ -269,7 +300,6 @@ input[type=checkbox]:checked:after {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  min-height: 15rem;
   margin: 1rem;
 }
 
@@ -292,12 +322,9 @@ input[type=checkbox]:checked:after {
 }
 .menu{
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  display: flex;
   justify-content: space-evenly;
   align-items: center;
+  width: 100%;
 }
 
 .card {
@@ -363,9 +390,9 @@ input[type=checkbox]:checked:after {
 }
 
 .btn {
-  align-self: center;
+  align-self: center!important;
   width: auto;
-  margin: 3rem auto;
+  margin: 1rem auto;
   padding: 0.5rem;
   border: none;
   background-color: white;
@@ -373,6 +400,9 @@ input[type=checkbox]:checked:after {
   font-size: 1.2rem;
   text-align: center;
   text-transform: uppercase;
+}
+.recruit {
+  font-size: 1rem;
 }
 .btn:hover{
   cursor: pointer;

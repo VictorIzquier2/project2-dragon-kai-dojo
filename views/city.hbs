@@ -13,7 +13,7 @@
         <h3 id="civ-counter">{{{count}}}</h3>
         <img class="card-image" src="/images/crowd.jpg" alt="crowd">
         <form action="/city" method="POST">
-          <button id="civ-recruit" class="btn btn-primary" onchange="enableRecruitCivBtn(this)">recruit</button>
+          <button id="civ-recruit" class="btn btn-primary recruit" onchange="enableRecruitCivBtn(this)">recruit</button>
         </form>
         {{#if errorMessage}}
            <p>{{errorMessage}}</p>

@@ -4,7 +4,7 @@
     <div class="main-classes">
       <div class="list">
         {{#each opponents}}
-          <div class="entry">
+          <div class="entry ranking">
             <input type="checkbox" id="{{_id}}" name="_id" checked value="{{_id}}" onchange="countPlayersSelected(this)">
             <img src="{{imageUrl}}" alt="{{name}}">
             <label for="{{_id}}">{{name}}</label>
