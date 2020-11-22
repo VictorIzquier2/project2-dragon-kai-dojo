@@ -1,0 +1,35 @@
+<div class="container-classes">
+  <h1 class="sensei-h1">Ranking</h1>
+  <div class="main-classes">
+    <h1><!-- --></h1>
+    <ol id="ranking" class="list">
+      {{#each sensei}}
+      <li class="entry entry-ranking">
+        <h2 class="position"></h2>
+        <img src="{{this.imageUrl}}" alt="{{this.name}}">
+        <h2>{{this.name}}</h2>
+        <h2 class="user">{{this.owner.username}}</h2>
+        <img src="/images/{{this.level}}.jpg" alt="{{this.level}}">
+         <h2>🏆 {{this.standing}}</h2>
+      </li>
+      {{/each}}
+    </ol>
+  </div>
+  <h1><!-- Title --></h1>
+  <div class="menu">
+    <div class="card dojo">
+      <a href="/main">
+        <img class="card-image" src="/images/outside-dojo.jpg" alt="outside dojo">
+        <h2>Back to Dojo</h2>
+      </a>
+    </div>
+    <div class="card valley">
+      <div class="info">
+      </div>
+      <a href="/fight">
+        <img class="card-image" src="/images/look-for-fight.jpg" alt="outside dojo">
+        <h2>Back to Fight</h2>
+      </a>
+    </div>
+  </div>
+</div>

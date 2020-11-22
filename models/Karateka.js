@@ -13,7 +13,7 @@ const karatekaSchema = new Schema({
   mana: {type: Number, min: 1, max: 5, default: 2},
   standing: {type: Number, min: 0, max: 29, default: 0},
   imageUrl: {type: String},
-  owner: {type: String}
+  owner: {type: Schema.ObjectId, ref: 'User'}
 });
 
 const Karateka = mongoose.model('Karateka', karatekaSchema);

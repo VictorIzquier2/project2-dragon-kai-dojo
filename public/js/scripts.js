@@ -169,3 +169,43 @@ if(civCounter){
   }
   enableRecruitCivBtn(recruitCivBtn);
 }
+
+// FIGHT //
+
+// BATTLE //
+
+// 1 opponents only
+let fighterSelected = 0;
+const countFighterSelected = (checkbox) => {
+  if(checkbox.checked == false){
+    fighterSelected--;
+  }
+  if(checkbox.checked == true && fighterSelected < 1){
+    fighterSelected++;
+  }else{
+    checkbox.checked = false;
+  }
+  console.log('hizo click', fighterSelected)
+  return fighterSelected;
+}
+
+// Enable START BATTLE BUTTON
+const starFightBtn = document.querySelector('.btn-fight');
+const enableFightBtn = () => {
+  if(fighterSelected < 1){
+    starFightBtn.setAttribute('disabled', false);
+    setTimeout(()=>{
+      starFightBtn.removeAttribute('disabled');
+    }, 1000)
+  }
+}
+
+// RANKING //
+const ranking = document.querySelector('#ranking');
+if(ranking){
+  const rank = ranking.children;
+  for(i = 0; i< rank.length; i++){
+    let pos = i;
+    rank[i].children[0].innerText = pos + 1;
+  }
+}

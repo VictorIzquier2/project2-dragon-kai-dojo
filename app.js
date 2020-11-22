@@ -20,7 +20,7 @@ const Master = require('./models/Master.js');
 const Sensei = require('./models/Sensei.js');
 const User = require('./models/User.js');
 const { level } = require('chalk');
-const { findOneAndUpdate } = require('./models/Civilian.js');
+const { findOneAndUpdate, find } = require('./models/Civilian.js');
 
 // .env CONFIG
 dotenv.config();
@@ -352,177 +352,184 @@ app.get('/sign-up', (req, res, next) => {
 });
 
 app.post('/sign-up', (req, res, next) => {
-  const {email, password} = req.body;
-
-  User.findOne({email: email})
-    .then((result) => {
+  const {email, password, username} = req.body;
+  User.findOne({username: username})
+    .then((result)=> {
       if(!result){
-        bcrypt.genSalt(10)
-          .then((salt) => {
-            bcrypt.hash(password, salt)
-              .then((hashedPassword)=> {
-                const hashedUser = {email: email, password: hashedPassword}
-                User.create(hashedUser)
-                  .then(() => {
-                    const randomMaster = () =>{
-                      const randomGenre = () => {
-                        const genreList = ['male', 'female'];
-                        return genreList[Math.round(Math.random())];
-                      };
-
-                      const genreResult = randomGenre();
-                      
-                      const randomName = (genre) =>{
-                        const randomMaleName = () => {
-                          const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
-                          return nameList[Math.round(Math.random() * (nameList.length))];
-                        };
-                        const randomFemaleName = () => {
-                          const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
-                          return nameList[Math.round(Math.random() * (nameList.length))];
-                        };
-                        if(genre == 'male'){
-                          return randomMaleName();
-                        }else {
-                          return randomFemaleName();
-                        }
-                      }
-
-                      const randomSolvency = () => {
-                        const solvencyList = ['insolvent', 'solvent', 'wealthy'];
-                        return solvencyList[Math.round(Math.random() * (solvencyList.length))];
-                      };
-
-                      const randomNature = () => {
-                        const natureList = ['peaceful', 'wroth'];
-                        return natureList[Math.round(Math.random())];
-                      };
-
-                      
-                      const randomLevel = () => {
-                        const levelList = ['red', 'blue', 'green', 'brown', 'black'];
-                        return levelList[Math.round(Math.random() * (levelList.length))];
-                      }
-                      const randomSkill = () => {
-                        return Math.ceil(Math.random() * 5);
-                      }
-                      const randomMana = () => {
-                        return Math.ceil(Math.random() * 10);
-                      }
-                      const randomStanding = () => {
-                        return Math.floor(Math.random() * (81 - 30 ) + 30);
-                      }
-                      
-                      const randomUrl = (genre) => {
-                        if(genre == 'male'){
-                          const maleUrlList = ['/images/male1.jpg', '/images/male2.jpg', '/images/male3.jpg', '/images/male4.jpg']
-                          return maleUrlList[Math.round(Math.random() * (maleUrlList.length))];
-                        }else {
-                          const femaleUrlList = ['/images/female1.jpg', '/images/female2.jpg', '/images/female3.jpg', '/images/female4.jpg']
-                          return femaleUrlList[Math.round(Math.random() * (femaleUrlList.length))];
-                        }
-                      }
-
-                      const newMaster = new Master({
-                        name: randomName(genreResult),
-                        genre: genreResult,
-                        solvency: randomSolvency(),
-                        nature: randomNature(),
-                        level: randomLevel(),
-                        strength: randomSkill(),
-                        dexterity: randomSkill(),
-                        stamina: randomSkill(),
-                        mana: randomMana(),
-                        standing: randomStanding(),
-                        imageUrl: randomUrl(genreResult)
-                      })
-                      return newMaster;
-                    }
-                    Master.create(randomMaster())
-                      .then(()=> {
-                        const randomCivilian = () =>{
-                          const randomGenre = () => {
-                            const genreList = ['male', 'female'];
-                            return genreList[Math.round(Math.random())];
-                          };
-
-                          const genreResult = randomGenre();
-                          
-                          const randomName = (genre) =>{
-                            const randomMaleName = () => {
-                              const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
-                              return nameList[Math.round(Math.random() * (nameList.length))];
+        User.findOne({email: email})
+          .then((result) => {
+            if(!result){
+              bcrypt.genSalt(10)
+                .then((salt) => {
+                  bcrypt.hash(password, salt)
+                    .then((hashedPassword)=> {
+                      const hashedUser = {email: email, username: username, password: hashedPassword}
+                      User.create(hashedUser)
+                        .then(() => {
+                          const randomMaster = () =>{
+                            const randomGenre = () => {
+                              const genreList = ['male', 'female'];
+                              return genreList[Math.round(Math.random())];
                             };
-                            const randomFemaleName = () => {
-                              const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
-                              return nameList[Math.round(Math.random() * (nameList.length))];
+      
+                            const genreResult = randomGenre();
+                            
+                            const randomName = (genre) =>{
+                              const randomMaleName = () => {
+                                const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
+                                return nameList[Math.round(Math.random() * (nameList.length))];
+                              };
+                              const randomFemaleName = () => {
+                                const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
+                                return nameList[Math.round(Math.random() * (nameList.length))];
+                              };
+                              if(genre == 'male'){
+                                return randomMaleName();
+                              }else {
+                                return randomFemaleName();
+                              }
+                            }
+      
+                            const randomSolvency = () => {
+                              const solvencyList = ['insolvent', 'solvent', 'wealthy'];
+                              return solvencyList[Math.round(Math.random() * (solvencyList.length))];
                             };
-                            if(genre == 'male'){
-                              return randomMaleName();
-                            }else {
-                              return randomFemaleName();
+      
+                            const randomNature = () => {
+                              const natureList = ['peaceful', 'wroth'];
+                              return natureList[Math.round(Math.random())];
+                            };
+      
+                            
+                            const randomLevel = () => {
+                              const levelList = ['red', 'blue', 'green', 'brown', 'black'];
+                              return levelList[Math.round(Math.random() * (levelList.length))];
                             }
-                          }
-
-                          const randomSolvency = () => {
-                            const solvencyList = ['insolvent', 'solvent', 'wealthy'];
-                            return solvencyList[Math.round(Math.random() * (solvencyList.length))];
-                          };
-
-                          const randomNature = () => {
-                            const natureList = ['peaceful', 'wroth'];
-                            return natureList[Math.round(Math.random())];
-                          };
-
-                          const randomUrl = (genre) => {
-                            if(genre == 'male'){
-                              return '/images/male.jpg';
-                            }else {
-                              return '/images/female.jpg';
+                            const randomSkill = () => {
+                              return Math.ceil(Math.random() * 5);
                             }
+                            const randomMana = () => {
+                              return Math.ceil(Math.random() * 10);
+                            }
+                            const randomStanding = () => {
+                              return Math.floor(Math.random() * (81 - 30 ) + 30);
+                            }
+                            
+                            const randomUrl = (genre) => {
+                              if(genre == 'male'){
+                                const maleUrlList = ['/images/male1.jpg', '/images/male2.jpg', '/images/male3.jpg', '/images/male4.jpg']
+                                return maleUrlList[Math.round(Math.random() * (maleUrlList.length))];
+                              }else {
+                                const femaleUrlList = ['/images/female1.jpg', '/images/female2.jpg', '/images/female3.jpg', '/images/female4.jpg']
+                                return femaleUrlList[Math.round(Math.random() * (femaleUrlList.length))];
+                              }
+                            }
+      
+                            const newMaster = new Master({
+                              name: randomName(genreResult),
+                              genre: genreResult,
+                              solvency: randomSolvency(),
+                              nature: randomNature(),
+                              level: randomLevel(),
+                              strength: randomSkill(),
+                              dexterity: randomSkill(),
+                              stamina: randomSkill(),
+                              mana: randomMana(),
+                              standing: randomStanding(),
+                              imageUrl: randomUrl(genreResult)
+                            })
+                            return newMaster;
                           }
-                          
-                          const newCiv = new Civilian({
-                            name: randomName(genreResult),
-                            genre: genreResult,
-                            solvency: randomSolvency(),
-                            nature: randomNature(),
-                            imageUrl: randomUrl(genreResult)
-                          })
-                          return newCiv;
-                        }
-                        const civAtStart = () => Civilian.create(randomCivilian());
-                        Promise.all([civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart()])
-                          .then(() => {
-                            res.redirect('/main');
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                            res.send("Error al crear nuevos ciudadanos")
-                          })
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                        res.send("Error al crear un nuevo maestro");
-                      })
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    res.send("Error al crear el nuevo usuario");
-                  })
-              })
-              .catch((err) => {
-                console.log(err);
-                res.send("Error al hashear la contraseña");
-              })
-          })
-          .catch((err) => {
-            console.log(err);
-            res.send("Error al encriptar la contraseña");
+                          Master.create(randomMaster())
+                            .then(()=> {
+                              const randomCivilian = () =>{
+                                const randomGenre = () => {
+                                  const genreList = ['male', 'female'];
+                                  return genreList[Math.round(Math.random())];
+                                };
+      
+                                const genreResult = randomGenre();
+                                
+                                const randomName = (genre) =>{
+                                  const randomMaleName = () => {
+                                    const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
+                                    return nameList[Math.round(Math.random() * (nameList.length))];
+                                  };
+                                  const randomFemaleName = () => {
+                                    const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
+                                    return nameList[Math.round(Math.random() * (nameList.length))];
+                                  };
+                                  if(genre == 'male'){
+                                    return randomMaleName();
+                                  }else {
+                                    return randomFemaleName();
+                                  }
+                                }
+      
+                                const randomSolvency = () => {
+                                  const solvencyList = ['insolvent', 'solvent', 'wealthy'];
+                                  return solvencyList[Math.round(Math.random() * (solvencyList.length))];
+                                };
+      
+                                const randomNature = () => {
+                                  const natureList = ['peaceful', 'wroth'];
+                                  return natureList[Math.round(Math.random())];
+                                };
+      
+                                const randomUrl = (genre) => {
+                                  if(genre == 'male'){
+                                    return '/images/male.jpg';
+                                  }else {
+                                    return '/images/female.jpg';
+                                  }
+                                }
+                                
+                                const newCiv = new Civilian({
+                                  name: randomName(genreResult),
+                                  genre: genreResult,
+                                  solvency: randomSolvency(),
+                                  nature: randomNature(),
+                                  imageUrl: randomUrl(genreResult)
+                                })
+                                return newCiv;
+                              }
+                              const civAtStart = () => Civilian.create(randomCivilian());
+                              Promise.all([civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart(), civAtStart()])
+                                .then(() => {
+                                  res.redirect('/main');
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                  res.send("Error al crear nuevos ciudadanos")
+                                })
+                            })
+                            .catch((err) => {
+                              console.log(err);
+                              res.send("Error al crear un nuevo maestro");
+                            })
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                          res.send("Error al crear el nuevo usuario");
+                        })
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      res.send("Error al hashear la contraseña");
+                    })
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.send("Error al encriptar la contraseña");
+                })
+            }else {
+              res.render('log-in', {errorMessage: 'El email ya existe. Prueba a hacer log-in'})
+            }
           })
       }else {
-        res.render('log-in', {errorMessage: 'El usuario ya existe. Prueba a hacer log-in'})
+        res.render('log-in', {errorMessage: 'Ese nombre de usuario ya existe. Pon otro.'})
       }
+
     })
 })
 
@@ -533,7 +540,6 @@ app.get('/log-in', (req, res, next) => {
 app.post('/log-in', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-
   User.findOne({email: email})
     .then((result) => {
       if(!result){
@@ -569,114 +575,121 @@ app.use((req, res, next) => {
 // MAIN
 
 app.get('/main', (req, res, next) => {
-  
-  Karateka.find({owner: req.session.currentUser})
-  .then((trainees) => {
-    const traineesNumb = trainees.length;
-    Civilian.countDocuments()
-    .then((debs) => {
-      Master.countDocuments()
-      .then((masters) => {
-            res.render('main', {session: req.session.currentUser, traineesNumb, debs, masters});
+  User.findOne({email: req.session.currentUser})
+    .then((user)=>{
+      Karateka.find({owner: user._id})
+      .then((trainees) => {
+        const traineesNumb = trainees.length;
+        Civilian.countDocuments()
+        .then((debs) => {
+          Master.countDocuments()
+          .then((masters) => {
+                res.render('main', {session: req.session.currentUser, traineesNumb, debs, masters});
+                })
             })
         })
     })
-  
 });
 
 app.post('/main', (req, res, next) => {
-  Sensei.findOne({owner: req.session.currentUser})
-    .then((result)=> {
-      if(!result){
-        const masterId = req.params;
-        const master = Master
-          .findOne(masterId)
-          .then((master)=>{
-            const sensei = () => {
-      
-              const senseiName = () => master.name;
-              const senseiGenre = () => master.genre;
-              const senseiSolvency = () => master.solvency;
-              const senseiNature = () => master.nature;
-              const senseiLevel = () => master.level;
-              const senseiStrength = () => master.strength;
-              const senseiDexterity = () => master.dexterity;
-              const senseiStamina = () => master.stamina;
-              const senseiMana = () => master.mana;
-              const senseiStanding = () => master.standing;
-              const senseiImageUrl = () => master.imageUrl;
-      
-              const newSensei = new Sensei({
-                name: senseiName(),
-                genre: senseiGenre(),
-                solvency: senseiSolvency(),
-                nature: senseiNature(),
-                level: senseiLevel(),
-                strength: senseiStrength(),
-                dexterity: senseiDexterity(),
-                stamina: senseiStamina(),
-                mana: senseiMana(),
-                standing: senseiStanding(),
-                imageUrl: senseiImageUrl(),
-                owner: req.session.currentUser
-              })
-              return newSensei;
-            }
-            Sensei.create(sensei())
-              .then((createdSensei) => {
-                User.updateOne({email: req.session.currentUser}, {$push: {sensei: createdSensei._id}})
-                  .then(() => {
-                    Master.deleteOne(masterId)
-                      .then(()=>{
-                        Master.countDocuments()
-                          .then((count) => {
-                            res.render('main', {count});
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                            res.send("Error a contabilizar a los maestros");
-                          })
-                      })
-                      .catch((err)=>{
-                        console.log(err);
-                        res.send("Error al eliminar al maestro disponible de la lista de maestros");
-                      })  
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    res.send("Error al pushear al nuevo sensei dentro del usuario");
-                  })
-              })
-              .catch((err) => {
-                console.log(err);
-                res.send("Error creando al nuevo sensei");
-              })
-          })
-          .catch((err)=> {
-            console.log(err);
-            res.send("Error localizando al maestro");
-          });
-      }else {
-        res.render('main', {errorMessage: 'Solo puedes tomar un sensei'});
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send("Error localizando al sensei")
-    })
+  User.findOne({email: req.session.currentUser})
+  .then((user)=> {
+    Sensei.findOne({owner: user._id})
+      .then((result)=> {
+        if(!result){
+          const masterId = req.params;
+          const master = Master
+            .findOne(masterId)
+            .then((master)=>{
+              const sensei = () => {
+        
+                const senseiName = () => master.name;
+                const senseiGenre = () => master.genre;
+                const senseiSolvency = () => master.solvency;
+                const senseiNature = () => master.nature;
+                const senseiLevel = () => master.level;
+                const senseiStrength = () => master.strength;
+                const senseiDexterity = () => master.dexterity;
+                const senseiStamina = () => master.stamina;
+                const senseiMana = () => master.mana;
+                const senseiStanding = () => master.standing;
+                const senseiImageUrl = () => master.imageUrl;
+        
+                const newSensei = new Sensei({
+                  name: senseiName(),
+                  genre: senseiGenre(),
+                  solvency: senseiSolvency(),
+                  nature: senseiNature(),
+                  level: senseiLevel(),
+                  strength: senseiStrength(),
+                  dexterity: senseiDexterity(),
+                  stamina: senseiStamina(),
+                  mana: senseiMana(),
+                  standing: senseiStanding(),
+                  imageUrl: senseiImageUrl(),
+                  owner: user._id
+                })
+                return newSensei;
+              }
+              Sensei.create(sensei())
+                .then((createdSensei) => {
+                  User.updateOne({email: req.session.currentUser}, {$push: {sensei: createdSensei._id}})
+                    .then(() => {
+                      Master.deleteOne(masterId)
+                        .then(()=>{
+                          Master.countDocuments()
+                            .then((count) => {
+                              res.render('main', {count});
+                            })
+                            .catch((err) => {
+                              console.log(err);
+                              res.send("Error a contabilizar a los maestros");
+                            })
+                        })
+                        .catch((err)=>{
+                          console.log(err);
+                          res.send("Error al eliminar al maestro disponible de la lista de maestros");
+                        })  
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      res.send("Error al pushear al nuevo sensei dentro del usuario");
+                    })
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.send("Error creando al nuevo sensei");
+                })
+            })
+            .catch((err)=> {
+              console.log(err);
+              res.send("Error localizando al maestro");
+            });
+        }else {
+          res.render('main', {errorMessage: 'Solo puedes tomar un sensei'});
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send("Error localizando al sensei")
+      })
+  })
 })
 
 // CLASSES
 
 app.get('/classes', (req, res, next) => {
-  Sensei.find({owner: req.session.currentUser}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-    .then((senseis)=> {
-      Karateka.find({owner: req.session.currentUser}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-        .then((karatekas) => {
-          res.render('classes', {senseis, karatekas});
-        })
-        .catch((err)=> {
-          console.log(err);
+  User.findOne({email: req.session.currentUser})
+    .then((user)=>{
+      Sensei.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+        .then((senseis)=> {
+          Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+            .then((karatekas) => {
+              res.render('classes', {senseis, karatekas});
+            })
+            .catch((err)=> {
+              console.log(err);
+            })
         })
     })
 });
@@ -756,32 +769,37 @@ app.post('/classes/train', (req, res, next) => {
       }  
       return levelUp;   
     }
-
-    Karateka.find({owner: req.session.currentUser}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
-      .then((trainees) => {
-        trainees.forEach((trainee)=>{
-          const id = trainee._id;
-          const newStrength = trainee.strength += levelUpStrength(trainee);
-          const newDexterity = trainee.dexterity += levelUpDexterity(trainee);
-          const newStamina = trainee.stamina += levelUpStamina(trainee);
-          Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina})
-        })
-        res.render('classes/train', {trainees})
-
-      })
-      .catch((err)=> {
-        console.log(err);
+    User.findOne({email: req.session.currentUser})
+      .then((user) => {
+        Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
+          .then((trainees) => {
+            trainees.forEach((trainee)=>{
+              const id = trainee._id;
+              const newStrength = trainee.strength += levelUpStrength(trainee);
+              const newDexterity = trainee.dexterity += levelUpDexterity(trainee);
+              const newStamina = trainee.stamina += levelUpStamina(trainee);
+              Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina})
+            })
+            res.render('classes/train', {trainees})
+    
+          })
+          .catch((err)=> {
+            console.log(err);
+          })
       })
   });
 
 app.get('/classes/battle', (req, res, next) => {
-  Karateka.find({owner: req.session.currentUser}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, standing: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
-      .then((opponents) => {
-        res.render('classes/battle', ({opponents}))
-      })
-      .catch((err)=> {
-        console.log(err);
-      })
+  User.findOne({email: req.session.currentUser})
+    .then((user) => {
+      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, standing: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
+          .then((opponents) => {
+            res.render('classes/battle', ({opponents}))
+          })
+          .catch((err)=> {
+            console.log(err);
+          })
+    })
 });
 
 app.post('/classes/battle/', (req, res, next) => {
@@ -832,18 +850,33 @@ app.post('/classes/battle/', (req, res, next) => {
             .then(()=>{
               winner.forEach((opp)=>{
                 let oppWId = opp._id;
-                const levelList = ['white', 'yellow', 'orange','red', 'blue', 'green', 'brown', 'black'];
-                const standingPlus = (opp) => opp.standing ++;
-
-                const levelPlus = (opp) => {
-                  opp.standing > 68 ? opp.level = levelList[7] :
-                  opp.standing > 58 ? opp.level = levelList[6] :
-                  opp.standing > 58 ? opp.level = levelList[5] :
-                  opp.standing > 48 ? opp.level = levelList[4] :
-                  opp.standing > 38 ? opp.level = levelList[3] :
-                  opp.standing > 18 ? opp.level = levelList[2] :
-                  opp.standing > 8 ? opp.level = levelList[1] :
-                  opp.level = levelList[0];
+                const standingPlus = (opp) => {
+                  if(opp.standing < 99){
+                    opp.standing++;
+                  }else{
+                    opp.standing;
+                  }
+                  return opp.standing;
+                }
+                const levelPlus = (x) => {
+                  if(x.standing > 68) 
+                    x.level = "black"
+                  else if(x.standing > 58)
+                    x.level = "brown"
+                  else if(x.standing > 48)
+                    x.level = "green"
+                  else if(x.standing > 38)
+                    x.level = "blue"
+                  else if(x.standing > 28)
+                    x.level = "red"
+                  else if(x.standing > 18)
+                    x.level = "orange"
+                  else if(x.standing > 8)
+                    x.level = "yellow"
+                  else{
+                    x.level = "white"
+                  }
+                  return x.level;
                 }
                 
                 Karateka.findByIdAndUpdate(oppWId, {standing: standingPlus(opp), level: levelPlus(opp)})
@@ -866,14 +899,17 @@ app.post('/classes/battle/', (req, res, next) => {
 })
 
 app.get('/classes/tourney', (req, res, next) => {
-  Karateka.find({owner: req.session.currentUser}, {name: 1, imageUrl: 1, level: 1, mana: 1})
-    .then((opponents) => {
-      res.render('classes/tourney', {opponents});
+  User.findOne({email: req.session.currentUser})
+    .then((user) => {
+      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, mana: 1})
+        .then((opponents) => {
+          res.render('classes/tourney', {opponents});
+        })
+        .catch((err)=> {
+          console.log(err);
+    
+        });
     })
-    .catch((err)=> {
-      console.log(err);
-
-    });
 });
 
 app.post('/classes/tourney', (req, res, next) => {
@@ -961,15 +997,25 @@ app.post('/classes/tourney', (req, res, next) => {
             perdedores.push(player)
           }
         })
-        vencedores.length == 7 ? vencedores.push(perdedores[0]) :
-        vencedores.lenth == 6 ? vencedores.push(perdedores[0], perdedores[1]) :
-        vencedores.length == 5 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2]) :
-        vencedores.length == 4 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3]) :
-        vencedores.length == 3 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4]) :
-        vencedores.length == 2 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5]) :
-        vencedores.length == 1 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5], perdedores[6]) : 
-        vencedores.length == 0 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5], perdedores[6], perdedores[7]) : vencedores;
-        
+
+        if(vencedores.length == 7){
+          vencedores.push(perdedores[0]);
+        }else if(vencedores.length == 6){
+          vencedores.push(perdedores[0], perdedores[1])
+        }else if(vencedores.length == 5){
+          vencedores.push(perdedores[0],perdedores[1], perdedores[2], )
+        }else if(vencedores.length == 4){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], )
+        }else if(vencedores.length == 3){
+          vencedores.push(perdedores[0],perdedores[1], perdedores[2], perdedores[3], perdedores[4], )
+        }else if(vencedores.length == 2){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5], )
+        }else if(vencedores.length == 1){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5], perdedores[6], )
+        }else if(vencedores.length == 0){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3], perdedores[4], perdedores[5], perdedores[6], perdedores[7])
+        }
+       
         res.render('classes/tourney/firstRound', {vencedores});
       })
 })
@@ -1031,11 +1077,16 @@ app.post('/classes/tourney/firstRound', (req, res, next) => {
             perdedores.push(player);
           }
         })
-        vencedores.length == 3 ? vencedores.push(perdedores[0]) :
-        vencedores.length == 2 ? vencedores.push(perdedores[0], perdedores[1]) :
-        vencedores.length == 1 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2]) : 
-        vencedores.length == 0 ? vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3]) : vencedores;
-        
+        if(vencedores.length == 3){
+          vencedores.push(perdedores[0])
+        }else if(vencedores.length == 2 ){
+          vencedores.push(perdedores[0], perdedores[1], )
+        }else if(vencedores.length == 1){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], )
+        }
+        else if(vencedores.length == 0){
+          vencedores.push(perdedores[0], perdedores[1], perdedores[2], perdedores[3])
+        }        
         res.render('classes/tourney/secondRound', {vencedores});
       })
 })
@@ -1083,9 +1134,11 @@ app.post('/classes/tourney/secondRound', (req, res, next) => {
             perdedores.push(player);
           }
         })
-        vencedores.length == 1 ? vencedores.push(perdedores[0]) :
-        vencedores.length == 0 ? vencedores.push(perdedores[0], perdedores[1]) : vencedores;
-        
+        if(vencedores.length == 1){
+          vencedores.push(perdedores[0]);
+        }else if(vencedores.length == 0){
+          vencedores.push(perdedores[0], perdedores[1])
+        }
         res.render('classes/tourney/semiFinal', {vencedores});
       })
 })
@@ -1126,14 +1179,49 @@ app.post('/classes/tourney/semiFinal', (req, res, next) => {
             perdedores.push(player);
           }
         })
-        vencedores.length == 0 ? vencedores.push(perdedores[0]) : vencedores;
-        
+        if(vencedores.length == 0){
+          vencedores.push(perdedores[0]);
+        }        
         vencedores.forEach((vencedor)=> {
           let vencedorId = vencedor._id;
-          const standingAumen = (x) => x.standing < 99 ? x.standing + 1 : x.standing;
-          const manaAumen = (x) => x.mana < 10 ? x.mana + 1 : x.mana;
+          const standingAumen = (x) => {
+            if(x.standing > 0)
+              x.standing ++;
+            else{
+              x.standing;
+            }
+            return x.standing;
+          }
+          const manaAumen = (x) =>{
+            if(x.mana < 10){
+              x.mana++;
+            }else{
+              x.mana;
+            }
+            return x.mana;
+          }
+          const levelPlus = (x) => {
+            if(x.standing > 68) 
+              x.level = "black"
+            else if(x.standing > 58)
+              x.level = "brown"
+            else if(x.standing > 48)
+              x.level = "green"
+            else if(x.standing > 38)
+              x.level = "blue"
+            else if(x.standing > 28)
+              x.level = "red"
+            else if(x.standing > 18)
+              x.level = "orange"
+            else if(x.standing > 8)
+              x.level = "yellow"
+            else{
+              x.level = "white"
+            }
+            return x.level;
+          }
 
-          Karateka.findByIdAndUpdate(vencedorId, {standing: standingAumen(vencedor), mana: manaAumen(vencedor) })
+          Karateka.findByIdAndUpdate(vencedorId, {level: levelPlus(vencedor), standing: standingAumen(vencedor), mana: manaAumen(vencedor)})
             .then(()=>{
             })
           })
@@ -1264,91 +1352,213 @@ app.get('/city', (req, res, next) => {
 });
 
 app.post('/city', (req, res, next) => {
-  Karateka.find({owner: req.session.currentUser})
-    .then((result)=>{
-      if(result.length < 16){
-        const civId = req.params;
-        const civilian = Civilian
-          .findOne(civId)
-          .then((civilian)=>{
-            console.log(civilian);
-      
-            const trainee = () => {
-      
-              const karatekaName = () => {
-                return civilian.name;
-              }
-              const karatekaGenre = () => {
-                return civilian.genre;
-              }
-              const karatekaSolvency = () => {
-                return civilian.solvency;
-              }
-              const karatekaNature = () => {
-                return civilian.nature;
-              }
-              const karatekaImageUrl = () => {
-                return civilian.imageUrl;
-              }
-      
-                const newKarateka = new Karateka({
-                name: karatekaName(),
-                genre: karatekaGenre(),
-                solvency: karatekaSolvency(),
-                nature: karatekaNature(),
-                level: 'white',
-                strength: 1,
-                dexterity: 1,
-                stamina: 1,
-                mana: 1,
-                standing: 5,
-                imageUrl: karatekaImageUrl(),
-                owner: req.session.currentUser
-              })
-              return newKarateka;
-            }
-      
-            Karateka.create(trainee())
-              .then(() => {
-                Civilian.deleteOne(civId)
-                  .then(() => {
-                    res.redirect('/city');
+  User.findOne({email: req.session.currentUser})
+    .then((user) => {
+      Karateka.find({owner: user._id})
+        .then((result)=>{
+          if(result.length < 16){
+            const civId = req.params;
+            const civilian = Civilian
+              .findOne(civId)
+              .then((civilian)=>{
+                console.log(civilian);
+          
+                const trainee = () => {
+          
+                  const karatekaName = () => {
+                    return civilian.name;
+                  }
+                  const karatekaGenre = () => {
+                    return civilian.genre;
+                  }
+                  const karatekaSolvency = () => {
+                    return civilian.solvency;
+                  }
+                  const karatekaNature = () => {
+                    return civilian.nature;
+                  }
+                  const karatekaImageUrl = () => {
+                    return civilian.imageUrl;
+                  }
+          
+                    const newKarateka = new Karateka({
+                    name: karatekaName(),
+                    genre: karatekaGenre(),
+                    solvency: karatekaSolvency(),
+                    nature: karatekaNature(),
+                    level: 'white',
+                    strength: 1,
+                    dexterity: 1,
+                    stamina: 1,
+                    mana: 1,
+                    standing: 5,
+                    imageUrl: karatekaImageUrl(),
+                    owner: user._id
                   })
-                  .catch((err)=>{
+                  return newKarateka;
+                }
+          
+                Karateka.create(trainee())
+                  .then((trainee) => {
+                    User.updateOne({email: req.session.currentUser}, {$push: {karatekas: trainee._id}})
+                      .then(()=> {
+                        Civilian.deleteOne(civId)
+                          .then(() => {
+                            res.redirect('/city');
+                          })
+                          .catch((err)=>{
+                            console.log(err);
+                            res.send("Error al borrar al antiguo ciudadano");
+                          })
+                      })
+                  })
+                  .catch((err) => {
                     console.log(err);
-                    res.send("Error al borrar al antiguo ciudadano");
+                    res.send("Error creando al nuevo alumno");
                   })
               })
-              .catch((err) => {
+              .catch((err)=> {
                 console.log(err);
-                res.send("Error creando al nuevo alumno");
-              })
-          })
-          .catch((err)=> {
-            console.log(err);
-            res.send("Error buscando al ciudadano");
-          });
-      }else{
-        res.render('city', {errorMessage: 'Solo se permiten 16 alumnos'});
-      }
+                res.send("Error buscando al ciudadano");
+              });
+          }else{
+            res.render('city', {errorMessage: 'Solo se permiten 16 alumnos'});
+          }
+        })
     })
 })
 
 // FIGHT
 
 app.get('/fight', (req, res, next) => {
-  Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-    .then((masters) => {
-      Sensei.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-        .then((senseis) => {
-          res.render('fight', {masters, senseis});
+  User.findOne({email: req.session.currentUser})
+    .then((user) => {
+      Sensei.find({owner: user._id})
+        .then((player) => {
+          Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+            .then((masters) => {
+              Sensei.find({owner: {$ne: user._id}}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+                .then((senseis) => {
+                  res.render('fight', {player, masters, senseis});
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
+            })
+            .catch((err)=> {
+              console.log(err);
+            })
         })
-    })
-    .catch((err)=> {
-      console.log(err);
+        .catch((err)=> {
+          console.log(err);
+        })
     })
 });
 
+app.post('/fight', (req, res, next) => {
+  const findPlayer = () => Sensei.findById(req.body._id[0]);  
+  const findFighter = () => Sensei.findById(req.body._id[1]);
+  Promise.all([findPlayer(), findFighter()])
+    .then((result) => {
+      const firstStrike = (aggressor, defensor) => {
+        let aggNumberOfDices = aggressor.dexterity + aggressor.strength;
+        let aggDiceRoll = aggNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+        let defNumberOfDices = defensor.dexterity + defensor.stamina;
+        let defDiceRoll = defNumberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+        aggDiceRoll < defDiceRoll ?  defensor.mana  : defensor.mana -= 1;
+      };
+
+      const strikes = (fighter1, fighter2) => {
+        let fighter1Luky = fighter1.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+        let fighter2Luky = fighter2.dexterity * Math.floor(Math.random() * (11-2)) + 1;
+        fighter1Luky > fighter2Luky ? firstStrike(fighter1, fighter2) : firstStrike(fighter2, fighter1);
+      };
+
+      let winner = [];
+      let loser = [];
+
+      // The most aggressive strikes first
+      result[0].nature == 'wroth' ? firstStrike(result[0], result[1]) : firstStrike(result[1], result[0]);
+
+      // Rest of combat
+      do {strikes(result[0], result[1])} while(result[0].mana > 0 && result[1].mana > 0);
+
+      // Check Winner
+        result.forEach((opp)=> {
+          if(opp.mana > 0 ){
+            winner.push(opp);
+          }else {
+            loser.push(opp);
+          }
+        })
+        loser.forEach((opp)=>{
+          let oppId = opp._id;
+          const standingMinus = (opp) => {
+            if(opp.standing > 7)
+              opp.standing--;
+            else{
+              opp.standing;
+            }
+            return opp.standing;
+          }
+          Sensei.findByIdAndUpdate(oppId, {standing : standingMinus(opp)})
+            .then(()=>{
+              winner.forEach((opp)=>{
+                let oppWId = opp._id;
+                const standingPlus = (opp) => {
+                  if(opp.standing > 0)
+                    opp.standing ++;
+                  else{
+                    opp.standing;
+                  }
+                  return opp.standing;
+                }
+                const levelPlus = (x) => {
+                  if(x.standing > 68) 
+                    x.level = "black"
+                  else if(x.standing > 58)
+                    x.level = "brown"
+                  else if(x.standing > 48)
+                    x.level = "green"
+                  else if(x.standing > 38)
+                    x.level = "blue"
+                  else if(x.standing > 28)
+                    x.level = "red"
+                  else if(x.standing > 18)
+                    x.level = "orange"
+                  else if(x.standing > 8)
+                    x.level = "yellow"
+                  else{
+                    x.level = "white"
+                  }
+                  return x.level;
+                }
+                
+                Sensei.findByIdAndUpdate(oppWId, {standing: standingPlus(opp), level: levelPlus(opp)})
+                  .then(()=> {
+                    // Hide BattleBtn and Choose Opponents
+                    let hide = "display: none"; 
+                    // Render Winner
+                    res.render('fight', {winner, hide});
+                  })
+              })
+          })
+        })
+      
+    })
+    .catch((err)=> {
+      console.log(err);
+      res.send("Error al renderizar la pelea")
+    })
+})
+
+app.get('/ranking', (req, res, next) => {
+  Sensei.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1, owner: 1}).sort({standing: -1,level: -1})
+    .populate('owner')
+    .then((dbSensei) => {
+      res.render('ranking', {sensei: dbSensei});
+    })
+})
 // -- END ROUTES --
 
 // LISTENER

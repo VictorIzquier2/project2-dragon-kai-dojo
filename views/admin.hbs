@@ -1,19 +1,20 @@
 <div class="container-classes">
-  <h1>Admin</h1>
+  <h1 class="sensei-h1">Admin</h1>
   <div class="main-classes">
+    <h1>Senseis</h1>
     <div class="list">
       {{#each senseis}}
       <div class="entry">
         <img src="{{imageUrl}}" alt="{{name}}">
         <h2>{{name}}</h2>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
-         <h1>🏆 {{standing}}</h1>
+         <h2>🏆 {{standing}}</h2>
       </div>
       {{/each}}
     </div>
   </div>
   <h1><!-- Title --></h1>
-  <div class="training">
+  <div class="main-menu">
     <div class="card">
       <div class="info">
         <h3>{{{civilians}}}</h3>

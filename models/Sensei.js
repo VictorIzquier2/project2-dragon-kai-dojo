@@ -13,7 +13,7 @@ const senseiSchema = new Schema({
   mana: {type: Number, min: 1, max: 10, default: 2},
   standing: {type: Number, min: 30, max: 100, default: 30},
   imageUrl: {type: String, default: '/images/male1.jpg'},
-  owner: {type: String}
+  owner: {type: Schema.ObjectId, ref: 'User'}
 });
 
 const Sensei = mongoose.model('Sensei', senseiSchema);

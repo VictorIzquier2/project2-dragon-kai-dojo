@@ -1,30 +1,66 @@
 <div class="container-fight">
   <div class="header">
-    <a href="/log-out"><h2>Log-out</h2></a>
+    <a href="/log-out"><h4>Log-out</h4></a>
   </div>
   <h1 class="sensei-h1">Fight</h1>
-  <h1>Masters</h1>
+  <form action="/fight" method="POST" id="fight">
   <div class="main-fight">
     <div class="list">
-      {{#each masters}}
+      {{#each player}}
       <div class="entry">
+        <input class="input-player" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countFighterSelected(this)" checked>
         <img src="{{imageUrl}}" alt="{{name}}">
-        <h2>{{name}}</h2>
+        <label for="{{_id}}">{{name}}</label>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
         <h2>{{standing}}</h2>
       </div>
       {{/each}}
     </div>
-  <h1>Senseis</h1>
+    <!--
+    <h1>Masters</h1>
     <div class="list">
-      {{#each senseis}}
+      {{#each masters}}
       <div class="entry">
+        <input type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countFighterSelected(this)">
         <img src="{{imageUrl}}" alt="{{name}}">
-        <h2>{{name}}</h2>
+        <label for="{{_id}}">{{name}}</label>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
         <h2>{{standing}}</h2>
       </div>
       {{/each}}
+    </div>
+    -->
+  <h1>Senseis</h1>
+    <div class="list">
+      {{#each senseis}}
+      <div class="entry">
+        <input class="input-senseis" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countFighterSelected(this)">
+        <img src="{{imageUrl}}" alt="{{name}}">
+        <label for="{{_id}}">{{name}}</label>
+        <img src="/images/{{level}}.jpg" alt="{{level}}">
+        <h2>{{standing}}</h2>
+      </div>
+      {{/each}}
+      <button class="btn btn-fight" onclick="enableFightBtn()" style="{{hide}}">Start Fight</button>
+    </div>
+  </div>
+  <h1><!-- --></h1>
+  </form>
+  <div class="main-classes">
+    <div class="result-list">
+      {{#each winner}}
+          <h1>{{name}} wins!</h1>
+          <img src="{{imageUrl}}" alt="{{name}}">
+          <h1>🏆</h1>
+      {{/each}}
+    </div>
+  </div>
+  <div class="menu">
+      <div class="card valley">
+      <a href="/ranking">
+        <img class="card-image" src="/images/ranking.jpg" alt="outside dojo">
+        <h2>Ranking</h2>
+      </a>
     </div>
   </div>
   <div class="menu">
