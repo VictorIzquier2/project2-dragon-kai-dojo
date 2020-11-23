@@ -8,6 +8,7 @@ const mongoose   = require('mongoose');
 const bcrypt     = require('bcrypt');
 const session    = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const axios      = require('axios').default;
 
 // CONSTANTS
 const app = express();
@@ -74,7 +75,7 @@ app.set('views', __dirname + '/views');
 // cookies CONFIG
 app.use(session({
   secret: "basic-auth-secret",
-  // cookie: { maxAge: 60000 },
+  //cookie: { maxAge: 86400 },
   saveUninitialized: true,
   resave: true,
   store: new MongoStore({
@@ -284,6 +285,7 @@ app.get('/log-in', (req, res, next) => {
 app.post('/log-in', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const expire = Date.now;
   User.findOne({email: email})
     .then((result) => {
       if(!result){
@@ -293,8 +295,9 @@ app.post('/log-in', (req, res, next) => {
           .then((resultFromBcrypt) => {
             if(resultFromBcrypt){
               req.session.currentUser = email;
-              console.log(req.session);
-              res.redirect('/main');
+           
+                  console.log(req.session);
+                  res.redirect('/main');               
             }else{
               res.render('log-in', {errorMessage: 'La contraseña es incorrecta. Vuelve a intentarlo'})
             }
@@ -423,6 +426,7 @@ app.post('/main', (req, res, next) => {
 // CLASSES
 
 app.get('/classes', (req, res, next) => {
+  
   User.findOne({email: req.session.currentUser})
     .then((user)=>{
       Sensei.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
@@ -438,100 +442,145 @@ app.get('/classes', (req, res, next) => {
     })
 });
 
+
+
 app.post('/classes/train', (req, res, next) => {
 
-    const levelUpStrength = (trainee) => {
-      let levelUp = 0;
-      let numberOfDices = trainee.dexterity + trainee.strength;
-      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
-      if (numberOfDices == 2 && trainee.strength < 5){
-        diceRoll > 17 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 3){
-        diceRoll > 25 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 4){
-        diceRoll > 33 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 5){
-        diceRoll > 41 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 6){
-        diceRoll > 49 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 7){
-        diceRoll > 57 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 8){
-        diceRoll > 65 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 9){
-        diceRoll > 73 ? levelUp = 1 : levelUp = 0;
-      }
-      return levelUp;    
+  const levelUpStrength = (trainee) => {
+    let levelUp = 0;
+    let numberOfDices = trainee.dexterity + trainee.strength;
+    let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+    if (numberOfDices == 2 && trainee.strength < 5){
+      diceRoll > 17 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 3){
+      diceRoll > 25 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 4){
+      diceRoll > 33 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 5){
+      diceRoll > 41 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 6){
+      diceRoll > 49 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 7){
+      diceRoll > 57 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 8){
+      diceRoll > 65 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 9){
+      diceRoll > 73 ? levelUp = 1 : levelUp = 0;
     }
-    
-    const levelUpDexterity = (trainee) => {
-      let levelUp = 0;
-      let numberOfDices = trainee.dexterity + trainee.dexterity - Math.round(trainee.dexterity/2);
-      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
-      if(numberOfDices == 1 < trainee.dexterity < 5){  
-        diceRoll > 8 ? levelUp = 1 : levelUp = 0;
-      }else if (numberOfDices == 2){
-        diceRoll > 17 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 3){
-        diceRoll > 25 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 4){
-        diceRoll > 33 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 5){
-        diceRoll > 41 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 6){
-        diceRoll > 49 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 7){
-        diceRoll > 57 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 8){
-        diceRoll > 65 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 9){
-        diceRoll > 73 ? levelUp = 1 : levelUp = 0;
-      }
-      return levelUp;
+    return levelUp;    
+  }
+  
+  const levelUpDexterity = (trainee) => {
+    let levelUp = 0;
+    let numberOfDices = trainee.dexterity + trainee.dexterity - Math.round(trainee.dexterity/2);
+    let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+    if(numberOfDices == 1 < trainee.dexterity < 5){  
+      diceRoll > 8 ? levelUp = 1 : levelUp = 0;
+    }else if (numberOfDices == 2){
+      diceRoll > 17 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 3){
+      diceRoll > 25 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 4){
+      diceRoll > 33 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 5){
+      diceRoll > 41 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 6){
+      diceRoll > 49 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 7){
+      diceRoll > 57 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 8){
+      diceRoll > 65 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 9){
+      diceRoll > 73 ? levelUp = 1 : levelUp = 0;
     }
+    return levelUp;
+  }
 
-    const levelUpStamina = (trainee) => {
-      let levelUp = 0;
-      let numberOfDices = trainee.dexterity + trainee.stamina;
-      let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
-      if (numberOfDices == 2 && trainee.stamina < 5){
-        diceRoll > 17 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 3){
-        diceRoll > 25 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 4){
-        diceRoll > 33 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 5){
-        diceRoll > 41 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 6){
-        diceRoll > 49 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 7){
-        diceRoll > 57 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 8){
-        diceRoll > 65 ? levelUp = 1 : levelUp = 0;
-      }else if(numberOfDices == 9){
-        diceRoll > 73 ? levelUp = 1 : levelUp = 0;
-      }  
-      return levelUp;   
-    }
-    User.findOne({email: req.session.currentUser})
-      .then((user) => {
-        Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
-          .then((trainees) => {
-            trainees.forEach((trainee)=>{
-              const id = trainee._id;
-              const newStrength = trainee.strength += levelUpStrength(trainee);
-              const newDexterity = trainee.dexterity += levelUpDexterity(trainee);
-              const newStamina = trainee.stamina += levelUpStamina(trainee);
-              Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina})
+  const levelUpStamina = (trainee) => {
+    let levelUp = 0;
+    let numberOfDices = trainee.dexterity + trainee.stamina;
+    let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+    if (numberOfDices == 2 && trainee.stamina < 5){
+      diceRoll > 17 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 3){
+      diceRoll > 25 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 4){
+      diceRoll > 33 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 5){
+      diceRoll > 41 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 6){
+      diceRoll > 49 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 7){
+      diceRoll > 57 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 8){
+      diceRoll > 65 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 9){
+      diceRoll > 73 ? levelUp = 1 : levelUp = 0;
+    }  
+    return levelUp;   
+  }
+
+  const levelUpMana = (trainee) => {
+    let levelUp = 0;
+    let numberOfDices = trainee.dexterity + trainee.mana;
+    let diceRoll = numberOfDices * Math.floor(Math.random() * (11-2)) + 1;
+    if (numberOfDices == 2 && trainee.mana < 5){
+      diceRoll > 17 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 3){
+      diceRoll > 25 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 4){
+      diceRoll > 33 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 5){
+      diceRoll > 41 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 6){
+      diceRoll > 49 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 7){
+      diceRoll > 57 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 8){
+      diceRoll > 65 ? levelUp = 1 : levelUp = 0;
+    }else if(numberOfDices == 9){
+      diceRoll > 73 ? levelUp = 1 : levelUp = 0;
+    }  
+    return levelUp;   
+  }
+
+  User.findOne({email: req.session.currentUser})
+    .then((usuary)=> {    
+      console.log(usuary.expire)   
+      if(usuary.expire < (Date.now() - 86400000) || typeof usuary.expire == "undefined"){
+        User.updateOne({email: req.session.currentUser}, {expire: Date.now()})
+            .then(() => {
+              Karateka.find({owner: usuary._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, mana: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1, mana: -1})
+                .then((trainees) => {
+                  trainees.forEach((trainee)=>{
+                    const id = trainee._id;
+                    const newStrength = trainee.strength += levelUpStrength(trainee);
+                    const newDexterity = trainee.dexterity += levelUpDexterity(trainee);
+                    const newStamina = trainee.stamina += levelUpStamina(trainee);
+                    const newMana = trainee.mana += levelUpMana(trainee);
+                    Karateka.findByIdAndUpdate(id, {strength: newStrength, dexterity: newDexterity, stamina: newStamina, mana: newMana})
+                  })
+                  res.render('classes/train', {trainees})
+          
+                })
+                .catch((err)=> {
+                  console.log(err);
+                })
             })
-            res.render('classes/train', {trainees})
-    
+      }else {
+         Sensei.find({owner: usuary._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+          .then((senseis)=> {
+            Karateka.find({owner: usuary._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+              .then((karatekas) => {
+                res.render('classes', {senseis, karatekas, trainErrorMessage: 'No puedes volver a entrenar en 24h'});
+              })
+              .catch((err)=> {
+                console.log(err);
+              })
           })
-          .catch((err)=> {
-            console.log(err);
-          })
-      })
-  });
+      }
+    })
+});
 
 app.get('/classes/battle', (req, res, next) => {
   User.findOne({email: req.session.currentUser})
@@ -645,7 +694,7 @@ app.post('/classes/battle/', (req, res, next) => {
 app.get('/classes/tourney', (req, res, next) => {
   User.findOne({email: req.session.currentUser})
     .then((user) => {
-      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, mana: 1})
+      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
         .then((opponents) => {
           res.render('classes/tourney', {opponents});
         })
@@ -936,14 +985,6 @@ app.post('/classes/tourney/semiFinal', (req, res, next) => {
             }
             return x.standing;
           }
-          const manaAumen = (x) =>{
-            if(x.mana < 10){
-              x.mana++;
-            }else{
-              x.mana;
-            }
-            return x.mana;
-          }
           const levelPlus = (x) => {
             if(x.standing > 68) 
               x.level = "black"
@@ -965,9 +1006,7 @@ app.post('/classes/tourney/semiFinal', (req, res, next) => {
             return x.level;
           }
 
-          Karateka.findByIdAndUpdate(vencedorId, {level: levelPlus(vencedor), standing: standingAumen(vencedor), mana: manaAumen(vencedor)})
-            .then(()=>{
-            })
+          Karateka.findByIdAndUpdate(vencedorId, {level: levelPlus(vencedor), standing: standingAumen(vencedor)})
           })
         res.render('classes/tourney/final', {vencedores});
       })
@@ -1135,7 +1174,7 @@ app.post('/city', (req, res, next) => {
                     dexterity: 1,
                     stamina: 1,
                     mana: 1,
-                    standing: 5,
+                    standing: 0,
                     imageUrl: karatekaImageUrl(),
                     owner: user._id
                   })

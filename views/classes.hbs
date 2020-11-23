@@ -27,28 +27,31 @@
   <h1>Training</h1>
   <div class="main-menu">
     <div class="card">
-      <div class="info">
-      </div>
-      <img class="card-image" src="/images/train.jpg" alt="outside dojo">
+      <img class="card-image" src="/images/train.jpg" alt="train">
       <form action="/classes/train" method="POST">
         <button class="btn btn-primary">Train</button>
       </form>
+      <div class="info">
+        <p id="train-warn">{{trainErrorMessage}}</p>
+      </div>
     </div>
     <div class="card">
-      <div class="info">
-      </div>
-      <img class="card-image" src="/images/battle.jpg" alt="outside dojo">
+      <img class="card-image" src="/images/battle.jpg" alt="battle">
       <form action="/classes/battle" method="GET">
         <button class="btn btn-primary">Battle</button>
       </form>
+      <div class="info">
+        <p></p>
+      </div>
     </div>
     <div class="card">
-      <div class="info">
-      </div>
-      <img class="card-image" src="/images/tourney.jpg" alt="outside dojo">
+      <img class="card-image" src="/images/tourney.jpg" alt="tourney">
       <form action="/classes/tourney" method="GET">
         <button class="btn btn-primary">Tourney</button>
       </form>
+      <div class="info">
+        <p id="tourney-warn">{{tourneyErrorMessage}}</p>
+      </div>
     </div>
   </div>
   <div class="menu">

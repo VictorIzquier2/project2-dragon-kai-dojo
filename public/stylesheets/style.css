@@ -41,7 +41,7 @@ h5 {
   text-transform: uppercase;
 }
 p {
-  font-size: .75rem;
+  font-size: .9rem;
 }
 .body{
   display: flex;
@@ -413,7 +413,7 @@ input[type=checkbox]:checked:after {
   transition: ease-in-out 0.3s;
 }
 .card h3 {
-  color: moccasin;
+  color: navajowhite;
 }
 
 .card h5 {
