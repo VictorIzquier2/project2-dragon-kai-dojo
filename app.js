@@ -1508,6 +1508,41 @@ app.get('/admin/karatekas', (req, res, next) => {
     })
 })
 
+app.get('/admin/karatekas/:id', (req, res, next) => {
+  const karatekaId = req.params.id;
+  Karateka.findById(karatekaId)
+    .then((result) => {
+      res.render('admin/karatekas/karateka', result);
+    })
+    .catch((err) => {
+      res.send('Error al renderizar karateka');
+    })
+})
+
+app.post('/admin/karatekas/:id', (req, res, next) => {
+  const karatekaId = req.params.id;
+  const editedKaraketa = req.body;
+  Karateka.findByIdAndUpdate(karatekaId, editedKaraketa)
+    .then(() => {
+      res.redirect(`../karatekas/${karatekaId}`);
+    })
+    .catch((err) => {
+      res.send(err);
+    })
+})
+
+app.get('admin/karatekas/delete/:id', (req, res, next) => {
+  const karatekaId = req.params.id;
+  Karateka.findByIdAndDelete(karatekaId)
+    .then(() => {
+      res.redirect('../');
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send("Error al eliminar Karateka");
+    })
+})
+
 app.get('/admin/masters', (req, res, next) => {
   Master.countDocuments()
     .then((mastersNumber) => {

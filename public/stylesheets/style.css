@@ -232,7 +232,8 @@ p {
 }
 .list .entry-form input[type='email'],
 .list .entry-form input[type='password'],
-.list .entry-form input[type='text'] {
+.list .entry-form input[type='text'],
+.list .entry-form input[type='number'] {
   font-family: var(--lalezar);
   font-weight: lighter;
   font-size: 1rem;

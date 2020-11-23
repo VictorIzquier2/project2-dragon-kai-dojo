@@ -23,6 +23,8 @@
        <div class="entry">
         <input class="input-karatekas" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countOppSelected(this)">
         <img src="{{imageUrl}}" alt="{{name}}">
+        <a class="edit" href="/admin/karatekas/{{_id}}"><i class="fas fa-edit"></i></a>
+        <a class="delete" href="/admin/karatekas/delete/{{_id}}"><i class="fas fa-trash"></i></a>
         <label for="{{_id}}">{{name}}</label>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
         <h2>🏆 {{standing}}</h2>

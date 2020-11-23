@@ -1,0 +1,73 @@
+<div class="container-classes">
+  <h1>Karateka</h1>
+  <form action="/admin/karatekas/{{_id}}" method="POST" id="editKarateka">
+    <div class="main-classes">
+      <div class="list">
+        <div class="entry-form">
+          <label for="{{_id}}"></label>
+          <input type="checkbox" id="{{_id}}" name="_id" value="{{_id}}">
+        </div>
+        <div class="entry-form">
+          <label for="name"><h2>Name</h2></label>
+          <input class="input" type="text" name="name" value="{{name}}" required>
+        </div>
+        <div class="entry-form">
+          <label for="genre"><h2>Genre</h2></label>
+          <input class="input" type="text" name="genre" value="{{genre}}" required placeholder="male, female">
+        </div>
+        <div class="entry-form">
+          <label for="solvency"><h2>Solvency</h2></label>
+          <input class="input" type="text" name="solvency" value="{{solvency}}" required placeholder="insolvent, solvent, wealthy">
+        </div>
+        <div class="entry-form">
+          <label for="nature"><h2>Nature</h2></label>
+          <input class="input" type="text" name="nature" value="{{nature}}" required placeholder="peaceful, wroth">
+        </div>
+        <div class="entry-form">
+          <label for="level"><h2>Level</h2></label>
+          <input class="input" type="text" name="level" value="{{level}}" required placeholder="white, yellow, orange, red, blue, green, brown, black">
+        </div>
+        <div class="entry-form">
+          <label for="strength"><h2>Strength</h2></label>
+          <input class="input" type="number" name="strength" value="{{strength}}" required min="1" max="5">
+        </div>
+        <div class="entry-form">
+          <label for="dexterity"><h2>Dexterity</h2></label>
+          <input class="input" type="number" name="dexterity" value="{{dexterity}}" min="1" max="5" required>
+        </div>
+        <div class="entry-form">
+          <label for="stamina"><h2>Stamina</h2></label>
+          <input class="input" type="number" name="stamina" value="{{stamina}}" min="1" max="5" required>
+        </div>
+        <div class="entry-form">
+          <label for="mana"><h2>Mana</h2></label>
+          <input class="input" type="number" name="mana" value="{{mana}}" min="1" max="5" required>
+        </div>
+        <div class="entry-form">
+          <label for="standing"><h2>Standing</h2></label>
+          <input class="input" type="number" name="standing" value="{{standing}}" required min="0" max="29">
+        </div>
+        <div class="entry-form">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <h1><!-- Title --></h1>
+  <div class="menu">
+    <div class="card dojo">
+      <a href="/admin/karatekas">
+        <img class="card-image" src="/images/train.jpg" alt="outside dojo">
+        <h2>Back to Karatekas</h2>
+      </a>
+    </div>
+    <div class="card valley">
+      <div class="info">
+      </div>
+      <a href="/admin">
+        <img class="card-image" src="/images/admin.jpg" alt="admin">
+        <h2>Back to Admin</h2>
+      </a>
+    </div>
+  </div>
+</div>
