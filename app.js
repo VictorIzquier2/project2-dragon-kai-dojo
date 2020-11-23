@@ -88,262 +88,6 @@ app.get('/', (req, res, next) => {
     res.render('index');
   });
 
-// ADMIN
-
-app.get('/admin', (req, res, next) => {
-
-  Civilian.countDocuments()
-    .then((civilians) => {
-      Karateka.countDocuments()
-        .then((karatekas) => {
-          Master.countDocuments()
-            .then((masters) => {
-              Sensei.find({}, {name: 1, level: 1, standing: 1, imageUrl: 1})
-                .then((senseis) => {
-                  console.log(senseis)
-                  res.render('admin', {civilians, karatekas, masters, senseis});
-                })
-            })
-        })
-    })
-});
-
-app.get('/admin/civilians', (req, res, next) => {
-  Civilian.countDocuments()
-      .then((civiliansNumber)=>{
-        Civilian.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-          .then((civilians) => {
-            res.render('admin/civilians', {civiliansNumber, civilians});
-          })
-          .catch((err)=> {
-            console.log(err);
-          })
-          .catch((err) => {
-            console.log(err);
-            res.send('Error al renderizar los ciudadanos');
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-});
-
-app.post('/admin/civilians', (req, res, next) => {
-  
-  // CIVILIAN GENERATOR
-
-  const randomCivilian = () =>{
-    const randomGenre = () => {
-      const genreList = ['male', 'female'];
-      return genreList[Math.round(Math.random())];
-    };
-
-    const genreResult = randomGenre();
-    
-    const randomName = (genre) =>{
-      const randomMaleName = () => {
-        const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
-        return nameList[Math.round(Math.random() * (nameList.length))];
-      };
-      const randomFemaleName = () => {
-        const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
-        return nameList[Math.round(Math.random() * (nameList.length))];
-      };
-      if(genre == 'male'){
-        return randomMaleName();
-      }else {
-        return randomFemaleName();
-      }
-    }
-
-    const randomSolvency = () => {
-      const solvencyList = ['insolvent', 'solvent', 'wealthy'];
-      return solvencyList[Math.round(Math.random() * (solvencyList.length))];
-    };
-
-    const randomNature = () => {
-      const natureList = ['peaceful', 'wroth'];
-      return natureList[Math.round(Math.random())];
-    };
-
-    const randomUrl = (genre) => {
-      if(genre == 'male'){
-        return '/images/male.jpg';
-      }else {
-        return '/images/female.jpg';
-      }
-    }
-    
-    const newCiv = new Civilian({
-      name: randomName(genreResult),
-      genre: genreResult,
-      solvency: randomSolvency(),
-      nature: randomNature(),
-      imageUrl: randomUrl(genreResult)
-    })
-    return newCiv;
-  }
-  
-  Civilian.create(randomCivilian())
-  .then(() => {
-    res.redirect('civilians');
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-});
-
-app.get('/admin/civilians/:id', (req, res, next) => {
-  const civilianId = req.params.id;
-  Civilian.findById(civilianId)
-    .then((result) => {
-      res.render('admin/civilians/civilian', result);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send('Error al renderizar ciudadano');
-    })
-})
-
-app.post('/admin/civilians/:id', (req, res, next) => {
-  const civilianId = req.params.id;
-  const editedCivilian = req.body;
-  Civilian.findByIdAndUpdate(civilianId, editedCivilian)
-    .then(()=> {
-      res.redirect(`../civilians/${civilianId}`);
-    })
-    .catch((err)=> {
-      res.send(err);
-    })
-})
-
-app.get('/admin/civilians/delete/:id', (req, res, next) => {
-  const civilianId = req.params.id;
-  Civilian.findByIdAndDelete(civilianId)
-    .then(() => {
-      res.redirect('../');
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send('Error al eliminar ciudadano');
-    })
-})
-
-app.get('/admin/karatekas', (req, res, next) => {
-  Karateka.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-    .then((karatekas) => {
-      res.render('admin/karatekas', {karatekas});
-    })
-    .catch((err)=> {
-      console.log(err);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send('Error al renderizar los alumnos');
-    })
-})
-
-app.get('/admin/masters', (req, res, next) => {
-  Master.countDocuments()
-    .then((mastersNumber) => {
-      Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-       .then((masters) => {
-         res.render('admin/masters', {masters, mastersNumber});
-       })
-       .catch((err) => {
-         console.log(err);
-         res.send('Error al renderizar los maestros');
-       })
-    })
-});
-
-app.post('/admin/masters', (req, res, next) => {
-  
-  // MASTER GENERATOR
-
-  const randomMaster = () =>{
-    const randomGenre = () => {
-      const genreList = ['male', 'female'];
-      return genreList[Math.round(Math.random())];
-    };
-
-    const genreResult = randomGenre();
-    
-    const randomName = (genre) =>{
-      const randomMaleName = () => {
-        const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
-        return nameList[Math.round(Math.random() * (nameList.length))];
-      };
-      const randomFemaleName = () => {
-        const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
-        return nameList[Math.round(Math.random() * (nameList.length))];
-      };
-      if(genre == 'male'){
-        return randomMaleName();
-      }else {
-        return randomFemaleName();
-      }
-    }
-
-    const randomSolvency = () => {
-      const solvencyList = ['insolvent', 'solvent', 'wealthy'];
-      return solvencyList[Math.round(Math.random() * (solvencyList.length))];
-    };
-
-    const randomNature = () => {
-      const natureList = ['peaceful', 'wroth'];
-      return natureList[Math.round(Math.random())];
-    };
-
-    
-    const randomLevel = () => {
-      const levelList = ['red', 'blue', 'green', 'brown', 'black'];
-      return levelList[Math.round(Math.random() * (levelList.length))];
-    }
-    const randomSkill = () => {
-      return Math.ceil(Math.random() * 5);
-    }
-    const randomMana = () => {
-      return Math.ceil(Math.random() * 10);
-    }
-    const randomStanding = () => {
-      return Math.floor(Math.random() * (81 - 30 ) + 30);
-    }
-    
-    const randomUrl = (genre) => {
-      if(genre == 'male'){
-        const maleUrlList = ['/images/male1.jpg', '/images/male2.jpg', '/images/male3.jpg', '/images/male4.jpg']
-        return maleUrlList[Math.round(Math.random() * (maleUrlList.length))];
-      }else {
-        const femaleUrlList = ['/images/female1.jpg', '/images/female2.jpg', '/images/female3.jpg', '/images/female4.jpg']
-        return femaleUrlList[Math.round(Math.random() * (femaleUrlList.length))];
-      }
-    }
-
-    const newMaster = new Master({
-      name: randomName(genreResult),
-      genre: genreResult,
-      solvency: randomSolvency(),
-      nature: randomNature(),
-      level: randomLevel(),
-      strength: randomSkill(),
-      dexterity: randomSkill(),
-      stamina: randomSkill(),
-      mana: randomMana(),
-      standing: randomStanding(),
-      imageUrl: randomUrl(genreResult)
-    })
-    return newMaster;
-  }
-  
-  Master.create(randomMaster())
-  .then((result) => {
-    res.redirect('masters');
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-});
 
 // USER
 
@@ -1559,6 +1303,273 @@ app.get('/ranking', (req, res, next) => {
       res.render('ranking', {sensei: dbSensei});
     })
 })
+
+
+
+// ADMIN
+
+app.use((req, res, next) => {
+  if(req.session.currentUser == 'victor.izquierdo1985@gmail.com'){
+    next();
+  } else {
+    res.redirect('/log-in');
+  }
+})
+
+app.get('/admin', (req, res, next) => {
+
+  Civilian.countDocuments()
+    .then((civilians) => {
+      Karateka.countDocuments()
+        .then((karatekas) => {
+          Master.countDocuments()
+            .then((masters) => {
+              Sensei.find({}, {name: 1, level: 1, standing: 1, imageUrl: 1})
+                .then((senseis) => {
+                  console.log(senseis)
+                  res.render('admin', {civilians, karatekas, masters, senseis});
+                })
+            })
+        })
+    })
+});
+
+app.get('/admin/civilians', (req, res, next) => {
+  Civilian.countDocuments()
+      .then((civiliansNumber)=>{
+        Civilian.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+          .then((civilians) => {
+            res.render('admin/civilians', {civiliansNumber, civilians});
+          })
+          .catch((err)=> {
+            console.log(err);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.send('Error al renderizar los ciudadanos');
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+});
+
+app.post('/admin/civilians', (req, res, next) => {
+  
+  // CIVILIAN GENERATOR
+
+  const randomCivilian = () =>{
+    const randomGenre = () => {
+      const genreList = ['male', 'female'];
+      return genreList[Math.round(Math.random())];
+    };
+
+    const genreResult = randomGenre();
+    
+    const randomName = (genre) =>{
+      const randomMaleName = () => {
+        const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
+        return nameList[Math.round(Math.random() * (nameList.length))];
+      };
+      const randomFemaleName = () => {
+        const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
+        return nameList[Math.round(Math.random() * (nameList.length))];
+      };
+      if(genre == 'male'){
+        return randomMaleName();
+      }else {
+        return randomFemaleName();
+      }
+    }
+
+    const randomSolvency = () => {
+      const solvencyList = ['insolvent', 'solvent', 'wealthy'];
+      return solvencyList[Math.round(Math.random() * (solvencyList.length))];
+    };
+
+    const randomNature = () => {
+      const natureList = ['peaceful', 'wroth'];
+      return natureList[Math.round(Math.random())];
+    };
+
+    const randomUrl = (genre) => {
+      if(genre == 'male'){
+        return '/images/male.jpg';
+      }else {
+        return '/images/female.jpg';
+      }
+    }
+    
+    const newCiv = new Civilian({
+      name: randomName(genreResult),
+      genre: genreResult,
+      solvency: randomSolvency(),
+      nature: randomNature(),
+      imageUrl: randomUrl(genreResult)
+    })
+    return newCiv;
+  }
+  
+  Civilian.create(randomCivilian())
+  .then(() => {
+    res.redirect('civilians');
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+});
+
+app.get('/admin/civilians/:id', (req, res, next) => {
+  const civilianId = req.params.id;
+  Civilian.findById(civilianId)
+    .then((result) => {
+      res.render('admin/civilians/civilian', result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('Error al renderizar ciudadano');
+    })
+})
+
+app.post('/admin/civilians/:id', (req, res, next) => {
+  const civilianId = req.params.id;
+  const editedCivilian = req.body;
+  Civilian.findByIdAndUpdate(civilianId, editedCivilian)
+    .then(()=> {
+      res.redirect(`../civilians/${civilianId}`);
+    })
+    .catch((err)=> {
+      res.send(err);
+    })
+})
+
+app.get('/admin/civilians/delete/:id', (req, res, next) => {
+  const civilianId = req.params.id;
+  Civilian.findByIdAndDelete(civilianId)
+    .then(() => {
+      res.redirect('../');
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('Error al eliminar ciudadano');
+    })
+})
+
+app.get('/admin/karatekas', (req, res, next) => {
+  Karateka.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((karatekas) => {
+      res.render('admin/karatekas', {karatekas});
+    })
+    .catch((err)=> {
+      console.log(err);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('Error al renderizar los alumnos');
+    })
+})
+
+app.get('/admin/masters', (req, res, next) => {
+  Master.countDocuments()
+    .then((mastersNumber) => {
+      Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+       .then((masters) => {
+         res.render('admin/masters', {masters, mastersNumber});
+       })
+       .catch((err) => {
+         console.log(err);
+         res.send('Error al renderizar los maestros');
+       })
+    })
+});
+
+app.post('/admin/masters', (req, res, next) => {
+  
+  // MASTER GENERATOR
+
+  const randomMaster = () =>{
+    const randomGenre = () => {
+      const genreList = ['male', 'female'];
+      return genreList[Math.round(Math.random())];
+    };
+
+    const genreResult = randomGenre();
+    
+    const randomName = (genre) =>{
+      const randomMaleName = () => {
+        const nameList = ['Davian', 'Sterling', 'Turner', 'Felipe', 'Rodrik', 'Rick', 'Jacob', 'Danny', 'August', 'Keon', 'Cannon', 'Wyatt', 'Manuel', 'Troy', 'Darek', 'Riley', 'Jason', 'Jeff', 'Michael', 'Luciano'];
+        return nameList[Math.round(Math.random() * (nameList.length))];
+      };
+      const randomFemaleName = () => {
+        const nameList = ['Grace', 'Janiah', 'Angeline', 'Krystal', 'Anaya', 'Janet', 'Kristin', 'Scarlet', 'Macie', 'Simone', 'Anahi', 'Carly', 'Sophie', 'Amani', 'Camila', 'Gloria', 'Natty', 'Raegan', 'Valerie', 'Shyanne'];
+        return nameList[Math.round(Math.random() * (nameList.length))];
+      };
+      if(genre == 'male'){
+        return randomMaleName();
+      }else {
+        return randomFemaleName();
+      }
+    }
+
+    const randomSolvency = () => {
+      const solvencyList = ['insolvent', 'solvent', 'wealthy'];
+      return solvencyList[Math.round(Math.random() * (solvencyList.length))];
+    };
+
+    const randomNature = () => {
+      const natureList = ['peaceful', 'wroth'];
+      return natureList[Math.round(Math.random())];
+    };
+
+    
+    const randomLevel = () => {
+      const levelList = ['red', 'blue', 'green', 'brown', 'black'];
+      return levelList[Math.round(Math.random() * (levelList.length))];
+    }
+    const randomSkill = () => {
+      return Math.ceil(Math.random() * 5);
+    }
+    const randomMana = () => {
+      return Math.ceil(Math.random() * 10);
+    }
+    const randomStanding = () => {
+      return Math.floor(Math.random() * (81 - 30 ) + 30);
+    }
+    
+    const randomUrl = (genre) => {
+      if(genre == 'male'){
+        const maleUrlList = ['/images/male1.jpg', '/images/male2.jpg', '/images/male3.jpg', '/images/male4.jpg']
+        return maleUrlList[Math.round(Math.random() * (maleUrlList.length))];
+      }else {
+        const femaleUrlList = ['/images/female1.jpg', '/images/female2.jpg', '/images/female3.jpg', '/images/female4.jpg']
+        return femaleUrlList[Math.round(Math.random() * (femaleUrlList.length))];
+      }
+    }
+
+    const newMaster = new Master({
+      name: randomName(genreResult),
+      genre: genreResult,
+      solvency: randomSolvency(),
+      nature: randomNature(),
+      level: randomLevel(),
+      strength: randomSkill(),
+      dexterity: randomSkill(),
+      stamina: randomSkill(),
+      mana: randomMana(),
+      standing: randomStanding(),
+      imageUrl: randomUrl(genreResult)
+    })
+    return newMaster;
+  }
+  
+  Master.create(randomMaster())
+  .then((result) => {
+    res.redirect('masters');
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+});
 // -- END ROUTES --
 
 // LISTENER

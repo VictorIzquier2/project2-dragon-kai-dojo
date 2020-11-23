@@ -1,5 +1,6 @@
 <div class="container">
   <div class="header">
+    <a href="/admin"><h4>Admin</h4></a>
     <a href="/log-out"><h4>Log-out</h4></a>
   </div>
   <div class="main">
@@ -12,8 +13,8 @@
         <div class="info">
           <h4>Masters</h4>
           <h3 id="master-counter">{{{masters}}}</h3>
+          <img class="card-image" src="/images/male4.jpg" alt="crowd">
         </div>
-        <img class="card-image" src="/images/male4.jpg" alt="crowd">
         <form action="/main" method="POST">
           <button id="master-recruit" class="btn btn-primary recruit">Recruit</button>
         </form>
@@ -22,6 +23,8 @@
         {{/if}}
       </div>
     </div>
+  </div>
+  <div class="main-menu">
   </div>
   <div class="menu">
     <div class="card classes">

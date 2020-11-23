@@ -8,10 +8,12 @@
       <img class="background-image" src="/images/city.jpg" alt="city">
     </div>
     <div class="aside">
-      <div class="card">
-        <h4>Debs</h4>
-        <h3 id="civ-counter">{{{count}}}</h3>
-        <img class="card-image" src="/images/crowd.jpg" alt="crowd">
+      <div class="card debs">
+        <div class="info">
+          <h4>Debs</h4>
+          <h3 id="civ-counter">{{{count}}}</h3>
+          <img class="card-image" src="/images/crowd.jpg" alt="crowd">
+        </div>
         <form action="/city" method="POST">
           <button id="civ-recruit" class="btn btn-primary recruit" onchange="enableRecruitCivBtn(this)">recruit</button>
         </form>
@@ -20,6 +22,8 @@
         {{/if}}
       </div>
     </div>
+  </div>
+  <div class="main-menu">
   </div>
   <div class="menu">
     <div class="card dojo">

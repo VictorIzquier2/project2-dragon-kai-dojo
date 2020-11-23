@@ -24,7 +24,7 @@ h1{
   margin: 2rem auto;
 }
 h2{
-  font-size: 2.5rem;
+  font-size: 2rem;
   text-transform: uppercase;
 }
 h3{
@@ -43,18 +43,27 @@ h5 {
 p {
   font-size: .75rem;
 }
-
+.body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .container {
-  height: 90vh;
-  max-height: 100vh;
-  width: 90vw;
+  height: 95vh;
+  width: 95vw;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .container-classes,
 .container-fight {
   height: auto;
   max-height: auto;
-  width: 90vw;
-
+  width: 95vw;
+  margin: 1rem;
 }
 .container-classes h1,
 .container-fight h1 {
@@ -65,7 +74,9 @@ p {
 }
 .header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 2rem;
+  width: 100%;
 }
 .header a {
   text-decoration: none;
@@ -106,6 +117,7 @@ p {
 }
 .vista {
   width: 70%;
+  max-width: 50rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -118,6 +130,16 @@ p {
   font-weight: bold;
   color: crimson;
   text-align: center;
+}
+.vista img {
+  max-width: 25rem;
+  max-height: 25rem;
+}
+@media(max-height: 420px){
+  .vista img{
+    max-width: 10rem;
+    max-height: 10rem;
+  }
 }
 .list {
   display: flex;
@@ -140,8 +162,13 @@ p {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 45vw;
+  width: 40vw;
   height: 10vh;
+}
+@media (min-width: 480px){
+  .entry{
+    margin: 1rem;
+  }
 }
 .ranking{
   justify-content: space-between;
@@ -302,7 +329,11 @@ input[type=checkbox]:checked:after {
   align-items: flex-start;
   margin: 1rem;
 }
-
+@media (min-width: 480px){
+  .main-menu{
+    margin-bottom: 8rem;
+  }
+}
 .main-menu h1{
   color: limegreen;
 }
@@ -314,11 +345,16 @@ input[type=checkbox]:checked:after {
   align-items: center;
   width: 33%;
   height: 33%;
+  max-width: 35rem;
   margin: 1rem 2rem 4rem 0.5rem;
 }
 
 .aside h1{
   color: limegreen;
+}
+.aside .card img {
+  max-width: 8rem;
+  max-height: 8rem;
 }
 .menu{
   display: flex;
@@ -331,7 +367,12 @@ input[type=checkbox]:checked:after {
   width: 25vw;
   height: 25vh;
 }
-
+.card .master {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
 .card .info{
   display: flex;
   flex-direction: column;
@@ -340,7 +381,7 @@ input[type=checkbox]:checked:after {
 }
 .card-image {
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
 }
 
 .card a {
@@ -356,6 +397,12 @@ input[type=checkbox]:checked:after {
 .card:hover a h2 {
   background-color: moccasin;
   transition: ease-in-out 0.3s;
+}
+.card form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .classes:hover a h2{
   background-color: lemonchiffon;
@@ -402,6 +449,7 @@ input[type=checkbox]:checked:after {
   text-transform: uppercase;
 }
 .recruit {
+  align-self: center;
   font-size: 1rem;
 }
 .btn:hover{
