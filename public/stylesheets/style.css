@@ -167,7 +167,7 @@ p {
   justify-content: space-around;
   align-items: center;
   width: 40%;
-  height: 10%;
+  height: 15%
 }
 @media (min-width: 480px){
   .entry{
@@ -175,7 +175,7 @@ p {
   }
 }
 .entry-sensei {
-  width: 100%;
+  width: 20%;
 }
 .ranking{
   justify-content: space-between;
