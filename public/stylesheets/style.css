@@ -181,7 +181,13 @@ p {
   justify-content: space-between;
   align-items: center;
   width: 90%;
-  height: 15vh;
+  height: 15%;
+}
+@media(min-width: 992px) {
+  .ranking{
+    width: 40%;
+    height: 15%;
+  }
 }
 .entry-ranking .rank-info{
   display: flex;
@@ -218,12 +224,12 @@ p {
   width: 75%;
   margin: 0.125rem 1rem;
   padding: 0 1rem;
-  height: 5vh;
+  height: 5%;
   flex-grow: 0;
 }
 .list .entry-form h2  {
   text-align: justify;
-  width: 25vw;
+  width: 25%;
 }
 .list .entry-form label img{
   height: 6vh;
@@ -339,7 +345,7 @@ input[type=checkbox]:checked:after {
 }
 @media (min-width: 480px){
   .main-menu{
-    margin-bottom: 8rem;
+    margin-bottom: 9rem;
   }
 }
 .main-menu h1{
@@ -389,8 +395,8 @@ input[type=checkbox]:checked:after {
 }
 .card-image {
   width: 100%;
-  max-width: 21rem;
-  max-height: 21rem;
+  max-width: 20rem;
+  max-height: 20rem;
   margin: 0 auto;
 }
 
