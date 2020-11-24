@@ -14,7 +14,6 @@ const axios      = require('axios').default;
 const app = express();
 const salt = bcrypt.genSaltSync(process.env.SALTROUNDS);
 const PORT = process.env.PORT || 3000;
-const url = 'mongodb+srv://VictorIronHacker:Mindfulnes2018*@cluster0.ft3au.mongodb.net/Dragon-kai-dojo?retryWrites=true&w=majority';
 
 // MODELS
 const Civilian = require('./models/Civilian.js');
@@ -54,17 +53,14 @@ mongoose
 // GLOBAL CONNECTION
 
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useCreateIndex: true,    
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+  .connect(process.env.MONGODB_URI, {    
+    useNewUrlParser: true
   })
     .then((result) => {
       console.log('Conectado a la base de datos de Heroku');
     })
     .catch((err) => {
-      console.log(err);
+      console.error('Error while connecting to DB', err);
     })
 
 mongoose.connection.on('connected', ()=>{
@@ -246,9 +242,11 @@ app.post('/sign-up', (req, res, next) => {
       
                                 const randomUrl = (genre) => {
                                   if(genre == 'male'){
-                                    return '/images/male.jpg';
+                                    const boysList = ['/images/boy1.jpg', '/images/boy2.jpg', '/images/boy3.jpg', '/images/boy4.jpg', ]
+                                    return boysList[Math.round(Math.random() * (boysList.length))];
                                   }else {
-                                    return '/images/female.jpg';
+                                    const girlsList = ['/images/girl1.jpg','/images/girl2.jpg', '/images/girl3.jpg', '/images/girl4.jpg', ]
+                                    return girlsList[Math.round(Math.random() * (girlsList.length))];
                                   }
                                 }
                                 
@@ -1456,9 +1454,11 @@ app.post('/admin/civilians', (req, res, next) => {
 
     const randomUrl = (genre) => {
       if(genre == 'male'){
-        return '/images/male.jpg';
+        const boysList = ['/images/boy1.jpg', '/images/boy2.jpg', '/images/boy3.jpg', '/images/boy4.jpg', ]
+        return boysList[Math.round(Math.random() * (boysList.length))];
       }else {
-        return '/images/female.jpg';
+        const girlsList = ['/images/girl1.jpg','/images/girl2.jpg', '/images/girl3.jpg', '/images/girl4.jpg', ]
+        return girlsList[Math.round(Math.random() * (girlsList.length))];
       }
     }
     
