@@ -274,6 +274,11 @@ p {
   width: 50%;
   max-width: 9rem;
 }
+@media(min-width: 992px) {
+  .entry .sensei-img {
+    width: 100%;
+}
+}
 .entry a {
   text-decoration: none;
   font-size: 1.2rem;
