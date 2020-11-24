@@ -55,7 +55,7 @@ p {
   height: 95%;
   width: 95%;
   max-width: 992px!important;
-  margin: 1rem;
+  margin: 1rem auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -67,7 +67,7 @@ p {
   max-height: auto;
   width: 95%;
   max-width: 992px!important;
-  margin: 1rem;
+  margin: 1rem auto;
 }
 .container-classes h1,
 .container-fight h1 {
@@ -386,8 +386,8 @@ input[type=checkbox]:checked:after {
 }
 .card-image {
   width: 100%;
-  max-width: 25rem;
-  max-height: 25rem;
+  max-width: 21rem;
+  max-height: 21rem;
   margin: 0 auto;
 }
 
