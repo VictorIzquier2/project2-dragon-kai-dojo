@@ -7,7 +7,7 @@
   <div class="main-fight">
     <div class="list">
       {{#each player}}
-      <div class="entry">
+      <div class="entry entry-sensei">
         <input class="input-player" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countFighterSelected(this)" checked>
         <img src="{{imageUrl}}" alt="{{name}}">
         <label for="{{_id}}">{{name}}</label>
@@ -41,8 +41,8 @@
         <h2>{{standing}}</h2>
       </div>
       {{/each}}
-      <button class="btn btn-fight" onclick="enableFightBtn()" style="{{hide}}">Start Fight</button>
     </div>
+    <button class="btn btn-fight" onclick="enableFightBtn()" style="{{hide}}">Start Fight</button>
   </div>
   <h1><!-- --></h1>
   </form>
