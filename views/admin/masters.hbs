@@ -1,16 +1,5 @@
 <div class="container-classes">
   <h1>Masters</h1>
-  <div class="main-menu">
-    <div class="card">
-      <div class="info">
-        <h3>{{{mastersNumber}}}</h3>
-      </div>
-      <img class="card-image" src="/images/tourney.jpg" alt="civilians">
-      <form action="/admin/masters" method="POST">
-        <button class="btn btn-primary">Create</button>
-      </form>
-    </div>
-  </div>
   <div class="menu">
     <div class="card valley">
       <div class="info">
@@ -27,13 +16,26 @@
       </a>
     </div>
   </div>
+  <div class="main-menu">
+    <div class="card">
+      <div class="info">
+        <h3>{{{mastersNumber}}}</h3>
+      </div>
+      <img class="card-image" src="/images/tourney.jpg" alt="Create master">
+      <form action="/admin/masters" method="POST">
+        <button class="btn btn-primary">Create</button>
+      </form>
+    </div>
+  </div>
   <h1><!-- Title --></h1>
   <div class="main-classes">
     <div class="list">
       {{#each masters}}
        <div class="entry">
-        <input class="input-masters" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}" onchange="countOppSelected(this)">
+        <input class="input-masters" type="checkbox" id="{{_id}}" name="_id" value="{{_id}}">
         <img src="{{imageUrl}}" alt="{{name}}">
+        <a class="edit" href="/admin/masters/{{_id}}"><i class="fas fa-edit"></i></a>
+        <a class="delete" href="/admin/masters/delete/{{_id}}"><i class="fas fa-trash"></i></a>
         <label for="{{_id}}">{{name}}</label>
         <img src="/images/{{level}}.jpg" alt="{{level}}">
         <h2>🏆 {{standing}}</h2>

@@ -13,6 +13,8 @@ const axios      = require('axios').default;
 // CONSTANTS
 const app = express();
 const salt = bcrypt.genSaltSync(process.env.SALTROUNDS);
+const PORT = process.env.PORT || 3000;
+const url = 'mongodb+srv://VictorIronHacker:Mindfulnes2018*@cluster0.ft3au.mongodb.net/Dragon-kai-dojo?retryWrites=true&w=majority';
 
 // MODELS
 const Civilian = require('./models/Civilian.js');
@@ -28,8 +30,12 @@ dotenv.config();
 
 // bodyParser CONFIG
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 // mongoose CONFIG
+
+// LOCAL CONNECTION
+/*
 mongoose
   .connect(`mongodb://localhost/${process.env.DATABASE}`, {
     useCreateIndex: true,
@@ -43,6 +49,23 @@ mongoose
   .catch((err) => {
     console.log(chalk.red('There has been an error: ', err));
   });
+*/
+
+// GLOBAL CONNECTION
+
+mongoose
+  .connect(url, {
+    useCreateIndex: true,    
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  })
+    .then((result) => {
+      console.log('Conectado a la base de datos de Mongo Atlas');
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 
 mongoose.connection.on('connected', ()=>{
   console.log(chalk.blue('Mongoose default connection open'));
@@ -1531,18 +1554,6 @@ app.post('/admin/karatekas/:id', (req, res, next) => {
     })
 })
 
-app.get('admin/karatekas/delete/:id', (req, res, next) => {
-  const karatekaId = req.params.id;
-  Karateka.findByIdAndDelete(karatekaId)
-    .then(() => {
-      res.redirect('../');
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send("Error al eliminar Karateka");
-    })
-})
-
 app.get('/admin/masters', (req, res, next) => {
   Master.countDocuments()
     .then((mastersNumber) => {
@@ -1644,10 +1655,43 @@ app.post('/admin/masters', (req, res, next) => {
     console.log(err);
   })
 });
+
+app.get('/admin/masters/:id', (req, res, next) => {
+  const masterId = req.params.id;
+  Master.findById(masterId)
+    .then((result) => {
+      res.render('admin/masters/master', result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('Error al renderizar maestro')
+    })
+})
+
+app.post('/admin/masters/:id', (req, res, next) => {
+  const masterId = req.params.id;
+  const editedMaster = req.body;
+  Master.findByIdAndUpdate(masterId, editedMaster)
+    .then(() => {
+      res.redirect(`../masters/${masterId}`);
+    })
+})
+
+app.get('/admin/masters/delete/:id', (req, res, next) => {
+  const masterId = req.params.id;
+  Master.findByIdAndDelete(masterId)
+    .then(() => {
+      res.redirect('/admin/masters');
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send('Error al eliminar maestro');
+    })
+})
+
 // -- END ROUTES --
 
 // LISTENER
-app.listen(process.env.PORT, () => {
-  const PORT = process.env.PORT;
+app.listen(PORT, () => {
   console.log(chalk.green.inverse.bold(`Connected to port: ${PORT}`));
 })
