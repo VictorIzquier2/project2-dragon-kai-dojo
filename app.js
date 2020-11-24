@@ -54,14 +54,14 @@ mongoose
 // GLOBAL CONNECTION
 
 mongoose
-  .connect(url, {
+  .connect(process.env.MONGODB_URI, {
     useCreateIndex: true,    
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
   })
     .then((result) => {
-      console.log('Conectado a la base de datos de Mongo Atlas');
+      console.log('Conectado a la base de datos de Heroku');
     })
     .catch((err) => {
       console.log(err);
