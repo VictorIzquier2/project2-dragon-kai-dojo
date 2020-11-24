@@ -463,8 +463,6 @@ app.get('/classes', (req, res, next) => {
     })
 });
 
-
-
 app.post('/classes/train', (req, res, next) => {
 
   const levelUpStrength = (trainee) => {
