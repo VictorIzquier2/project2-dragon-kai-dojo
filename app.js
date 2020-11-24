@@ -1610,10 +1610,10 @@ app.post('/admin/masters', (req, res, next) => {
       return levelList[Math.round(Math.random() * (levelList.length))];
     }
     const randomSkill = () => {
-      return Math.ceil(Math.random() * 5);
+      return Math.floor(Math.random() * (6-3) + 3);
     }
     const randomMana = () => {
-      return Math.ceil(Math.random() * 10);
+      return Math.floor(Math.random() * (11 - 5) + 5);
     }
     const randomStanding = () => {
       return Math.floor(Math.random() * (81 - 30 ) + 30);
