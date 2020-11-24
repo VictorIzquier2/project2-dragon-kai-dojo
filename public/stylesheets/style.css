@@ -175,7 +175,7 @@ p {
   }
 }
 .entry-sensei {
-  width: 20%;
+  width: 100%;
 }
 .ranking{
   justify-content: space-between;
@@ -272,7 +272,7 @@ p {
 }
 .entry .sensei-img {
   width: 50%;
-  max-width: 14rem;
+  max-width: 9rem;
 }
 .entry a {
   text-decoration: none;
