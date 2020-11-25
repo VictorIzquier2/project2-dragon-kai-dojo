@@ -258,11 +258,19 @@ p {
   font-family: var(--lalezar);
   font-weight: lighter;
   font-size: 1rem;
-  width: 40%;
+  width: 75%;
   justify-self: flex-end;
   flex-grow: 0;
   margin-left: 1rem;
   padding-left: 1rem;
+}
+@media (min-width: 992px) {
+  .list .entry-form input[type='email'],
+.list .entry-form input[type='password'],
+.list .entry-form input[type='text'],
+.list .entry-form input[type='number'] {
+  width: 40%;
+}
 }
 .list .entry-form input[type='email']{
   margin-left: 3.3rem;
