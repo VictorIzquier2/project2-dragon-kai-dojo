@@ -27,22 +27,22 @@
   <h1>Training</h1>
   <div class="main-menu">
     <div class="card">
+      <div class="info">
+        <p id="train-warn">{{trainErrorMessage}}</p>
+      </div>
       <img class="card-image" src="/images/train.jpg" alt="train">
       <form action="/classes/train" method="POST">
         <button class="btn btn-primary">Train</button>
       </form>
-      <div class="info">
-        <p id="train-warn">{{trainErrorMessage}}</p>
-      </div>
     </div>
     <div class="card">
+      <div class="info">
+        <p></p>
+      </div>
       <img class="card-image" src="/images/battle.jpg" alt="battle">
       <form action="/classes/battle" method="GET">
         <button class="btn btn-primary">Battle</button>
       </form>
-      <div class="info">
-        <p></p>
-      </div>
     </div>
     <div class="card">
       <div class="info">
