@@ -9,7 +9,7 @@ const bcrypt     = require('bcrypt');
 const session    = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const axios      = require('axios').default;
-
+const passport   = require('passport');
 // CONSTANTS
 const app = express();
 const salt = bcrypt.genSaltSync(process.env.SALTROUNDS);
