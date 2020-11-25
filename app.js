@@ -501,6 +501,37 @@ app.post('/main', (req, res, next) => {
     })
 })
 
+app.get('/drop-out', (req, res, next) => {
+  res.render('drop-out')
+})
+
+app.post('/drop-out', (req, res, next) => {
+  const {password, username} = req.body;
+  User.findOne({username: username})
+    .then((result) => {
+      if(!result){
+        res.render('drop-put', {errorMessage: 'usuario no encontrado'})
+      }else{
+        bcrypt.compare(password, result.password)
+          .then((resultFromBcrypt) => {
+            if(req.user.username = username){
+              //Drop-out
+              const senseiToDrop = () => Sensei.findOneAndDelete({owner: req.user._id});
+              const karatekasToDrop = () => Karateka.deleteMany({owner: req.user._id});
+              Promise.all([senseiToDrop(), karatekasToDrop()])
+                .then(()=>{
+                  User.findByIdAndDelete(req.user._id)
+                    .then(() =>{
+                      res.redirect('/');
+                    })
+                })
+            }else{
+              res.render('drop-out', {errorMessage: 'La contraseña es incorrecta, vuelve a intentarlo'});
+            }
+          })
+      }
+    })
+})
 // CLASSES
 
 app.get('/classes', (req, res, next) => {

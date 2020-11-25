@@ -1,8 +1,8 @@
 <div class="container">
   <div class="main">
     <div class="vista">
-    <h1>Log-in</h1>
-    <form action="/log-in" method="POST" id="logIn">
+    <h1>Drop-out</h1>
+    <form action="/drop-out" method="POST" id="logIn">
         <div class="main-classes">
           <div class="list">
             <div class="entry-form">
@@ -19,7 +19,7 @@
             <h4><!-- --></h4>
             </div>
             <div class="entry-form">
-              <button type="submit" class="btn btn-primary">Join</button>
+              <button type="submit" class="btn btn-primary">Drop-out</button>
             </div>
             <div class="entry-form">
               {{#if errorMessage}}
@@ -31,14 +31,25 @@
       </form>
     </div>
   </div>
-  <div class="menu">
-    <div class="card sign-up">
+ <div class="menu">
+    <div class="card classes">
       <div class="info">
+        <h4>Trainees</h4>
+        <h3>{{{traineesNumb}}}</h3>
       </div>
-      <a href="/sign-up">
-        <img class="card-image" src="/images/sign-up.jpg" alt="sign-up">
-        <p>Don't have an account?</p>
-        <h2>Sign-Up</h2>
+      <a href="/classes">
+        <img class="card-image" src="/images/class.jpg" alt="Martial Art Class">
+        <h2>Go to Classes</h2>
+      </a>
+    </div>
+    <div class="card valley">
+      <div class="info">
+        <h4>Debs</h4>
+        <h3>{{{debs}}}</h3>
+      </div>
+      <a href="/city">
+        <img class="card-image" src="/images/city.jpg" alt="outside dojo">
+        <h2>Go to City</h2>
       </a>
     </div>
   </div>
