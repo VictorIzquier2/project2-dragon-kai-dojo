@@ -368,11 +368,6 @@ input[type=checkbox]:checked:after {
 }
 @media (min-width: 640px){
   .main-menu{
-    margin-bottom: 3rem;
-  }
-}
-@media (min-width: 720px){
-  .main-menu{
     margin-bottom: 6rem;
   }
 }
