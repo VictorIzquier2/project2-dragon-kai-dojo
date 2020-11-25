@@ -265,15 +265,17 @@ p {
   padding-left: 1rem;
 }
 @media (min-width: 992px) {
-  .list .entry-form input[type='email'],
+.list .entry-form input[type='email'],
 .list .entry-form input[type='password'],
 .list .entry-form input[type='text'],
 .list .entry-form input[type='number'] {
   width: 40%;
 }
 }
-.list .entry-form input[type='email']{
-  margin-left: 3.3rem;
+@media (min-width: 992px) {
+  .list .entry-form input[type='email']{
+    margin-left: 3.3rem;
+  }
 }
 .list .entry-form select {
   font-family: var(--lalezar)!important;
