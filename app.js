@@ -1,15 +1,19 @@
 // REQUIRES
-const dotenv     = require('dotenv');
-const express    = require('express');
-const chalk      = require('chalk');
-const bodyParser = require('body-parser');
-const hbs        = require('hbs');
-const mongoose   = require('mongoose');
-const bcrypt     = require('bcrypt');
-const session    = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const axios      = require('axios').default;
-const passport   = require('passport');
+const dotenv        = require('dotenv');
+const express       = require('express');
+const chalk         = require('chalk');
+const bodyParser    = require('body-parser');
+const hbs           = require('hbs');
+const mongoose      = require('mongoose');
+const bcrypt        = require('bcrypt');
+const session       = require('express-session');
+const MongoStore    = require('connect-mongo')(session);
+const axios         = require('axios').default;
+const passport      = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const flash         = require('connect-flash');
+
+
 // CONSTANTS
 const app = express();
 const salt = bcrypt.genSaltSync(process.env.SALTROUNDS);
@@ -54,7 +58,8 @@ mongoose
 
 mongoose
   .connect(process.env.MONGODB_URI, {    
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
     .then((result) => {
       console.log('Conectado a la base de datos de Heroku');
@@ -91,7 +96,7 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 
-// cookies CONFIG
+// cookies CONFIG & SESSION
 app.use(session({
   secret: "basic-auth-secret",
   //cookie: { maxAge: 86400 },
@@ -103,8 +108,51 @@ app.use(session({
   })
 }));
 
+// USER SERIALIZER
+passport.serializeUser((user, callback) => {
+  callback(null, user._id);
+})
+
+// USER DESERIALIZER
+passport.deserializeUser((id, callback) => {
+  User.findById(id, (err, user) => {
+    if(err) {return callback(err)}
+    callback(null, user)
+  })
+})
+
+// FLASH
+
+app.use(flash());
+
+// STRATEGY
+
+passport.use(new LocalStrategy({passReqToCallback: true}, (req, username, password, next) => {
+  User.findOne({username})
+  .then((user) => {
+    console.log(user)
+    if(!user){
+      return next(null, false, {errorMessage: "Incorrect username"})
+    }
+    if(!bcrypt.compareSync(password, user.password)){
+      return next(null, false, {errorMessage: "Incorrect password"})
+    }
+    
+    console.log('string')
+      return next(null, user);
+    }) 
+    .catch((err)=> {
+      next(err);
+    })
+}))
+
+// INITIALIZE PASSPORT
+app.use(passport.initialize())
+app.use(passport.session())
+
 // -- ROUTES -- 
 app.get('/', (req, res, next) => {
+    console.log(req.user);
     res.render('index');
   });
 
@@ -300,9 +348,11 @@ app.post('/sign-up', (req, res, next) => {
 })
 
 app.get('/log-in', (req, res, next) => {
-  res.render('log-in');
+  res.render('log-in', {errorMessage: req.flash('error')});
 })
 
+
+/*
 app.post('/log-in', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -326,14 +376,23 @@ app.post('/log-in', (req, res, next) => {
       }
     })
 })
+*/
+
+app.post('/log-in', passport.authenticate('local', {
+  successRedirect: '/main',
+  failureRedirect: '/',
+  failureFlash: true,
+  passReqToCallback: true
+}))
 
 app.get('/log-out', (req, res, next) => {
   req.session.destroy()
   res.redirect('/');
 })
 
+
 app.use((req, res, next) => {
-  if(req.session.currentUser){
+  if(req.isAuthenticated()){
     next();
   } else {
     res.redirect('/log-in');
@@ -343,8 +402,9 @@ app.use((req, res, next) => {
 // MAIN
 
 app.get('/main', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
+  User.findOne({email: req.user.email})
     .then((user)=>{
+      console.log(user);
       Karateka.find({owner: user._id})
       .then((trainees) => {
         const traineesNumb = trainees.length;
@@ -360,105 +420,98 @@ app.get('/main', (req, res, next) => {
 });
 
 app.post('/main', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
-  .then((user)=> {
-    Sensei.findOne({owner: user._id})
-      .then((result)=> {
-        if(!result){
-          const masterId = req.params;
-          const master = Master
-            .findOne(masterId)
-            .then((master)=>{
-              const sensei = () => {
-        
-                const senseiName = () => master.name;
-                const senseiGenre = () => master.genre;
-                const senseiSolvency = () => master.solvency;
-                const senseiNature = () => master.nature;
-                const senseiLevel = () => master.level;
-                const senseiStrength = () => master.strength;
-                const senseiDexterity = () => master.dexterity;
-                const senseiStamina = () => master.stamina;
-                const senseiMana = () => master.mana;
-                const senseiStanding = () => master.standing;
-                const senseiImageUrl = () => master.imageUrl;
-        
-                const newSensei = new Sensei({
-                  name: senseiName(),
-                  genre: senseiGenre(),
-                  solvency: senseiSolvency(),
-                  nature: senseiNature(),
-                  level: senseiLevel(),
-                  strength: senseiStrength(),
-                  dexterity: senseiDexterity(),
-                  stamina: senseiStamina(),
-                  mana: senseiMana(),
-                  standing: senseiStanding(),
-                  imageUrl: senseiImageUrl(),
-                  owner: user._id
-                })
-                return newSensei;
-              }
-              Sensei.create(sensei())
-                .then((createdSensei) => {
-                  User.updateOne({email: req.session.currentUser}, {$push: {sensei: createdSensei._id}})
-                    .then(() => {
-                      Master.deleteOne(masterId)
-                        .then(()=>{
-                          Master.countDocuments()
-                            .then((count) => {
-                              res.render('main', {count});
-                            })
-                            .catch((err) => {
-                              console.log(err);
-                              res.send("Error a contabilizar a los maestros");
-                            })
-                        })
-                        .catch((err)=>{
-                          console.log(err);
-                          res.send("Error al eliminar al maestro disponible de la lista de maestros");
-                        })  
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      res.send("Error al pushear al nuevo sensei dentro del usuario");
-                    })
-                })
-                .catch((err) => {
-                  console.log(err);
-                  res.send("Error creando al nuevo sensei");
-                })
-            })
-            .catch((err)=> {
-              console.log(err);
-              res.send("Error localizando al maestro");
-            });
-        }else {
-          res.render('main', {errorMessage: 'Solo puedes tomar un sensei'});
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.send("Error localizando al sensei")
-      })
-  })
+  Sensei.findOne({owner: req.user._id})
+    .then((result)=> {
+      if(!result){
+        const masterId = req.params;
+        const master = Master
+          .findOne(masterId)
+          .then((master)=>{
+            const sensei = () => {
+      
+              const senseiName = () => master.name;
+              const senseiGenre = () => master.genre;
+              const senseiSolvency = () => master.solvency;
+              const senseiNature = () => master.nature;
+              const senseiLevel = () => master.level;
+              const senseiStrength = () => master.strength;
+              const senseiDexterity = () => master.dexterity;
+              const senseiStamina = () => master.stamina;
+              const senseiMana = () => master.mana;
+              const senseiStanding = () => master.standing;
+              const senseiImageUrl = () => master.imageUrl;
+      
+              const newSensei = new Sensei({
+                name: senseiName(),
+                genre: senseiGenre(),
+                solvency: senseiSolvency(),
+                nature: senseiNature(),
+                level: senseiLevel(),
+                strength: senseiStrength(),
+                dexterity: senseiDexterity(),
+                stamina: senseiStamina(),
+                mana: senseiMana(),
+                standing: senseiStanding(),
+                imageUrl: senseiImageUrl(),
+                owner: req.user._id
+              })
+              return newSensei;
+            }
+            Sensei.create(sensei())
+              .then((createdSensei) => {
+                User.updateOne({email: req.user.email}, {$push: {sensei: createdSensei._id}})
+                  .then(() => {
+                    Master.deleteOne(masterId)
+                      .then(()=>{
+                        Master.countDocuments()
+                          .then((count) => {
+                            res.render('main', {count});
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                            res.send("Error a contabilizar a los maestros");
+                          })
+                      })
+                      .catch((err)=>{
+                        console.log(err);
+                        res.send("Error al eliminar al maestro disponible de la lista de maestros");
+                      })  
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    res.send("Error al pushear al nuevo sensei dentro del usuario");
+                  })
+              })
+              .catch((err) => {
+                console.log(err);
+                res.send("Error creando al nuevo sensei");
+              })
+          })
+          .catch((err)=> {
+            console.log(err);
+            res.send("Error localizando al maestro");
+          });
+      }else {
+        res.render('main', {errorMessage: 'Solo puedes tomar un sensei'});
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send("Error localizando al sensei")
+    })
 })
 
 // CLASSES
 
 app.get('/classes', (req, res, next) => {
-  
-  User.findOne({email: req.session.currentUser})
-    .then((user)=>{
-      Sensei.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-        .then((senseis)=> {
-          Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-            .then((karatekas) => {
-              res.render('classes', {senseis, karatekas});
-            })
-            .catch((err)=> {
-              console.log(err);
-            })
+  Sensei.find({owner: req.user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((senseis)=> {
+      Karateka.find({owner: req.user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+        .then((karatekas) => {
+          res.render('classes', {senseis, karatekas});
+        })
+        .catch((err)=> {
+          console.log(err);
         })
     })
 });
@@ -563,13 +616,10 @@ app.post('/classes/train', (req, res, next) => {
     return levelUp;   
   }
 
-  User.findOne({email: req.session.currentUser})
-    .then((usuary)=> {    
-      console.log(usuary.expire)   
-      if(usuary.expire < (Date.now() - 86400000) || typeof usuary.expire == "undefined"){
-        User.updateOne({email: req.session.currentUser}, {expire: Date.now()})
+      if(req.user.expire < (Date.now() - 86400000) || typeof req.user.expire == "undefined"){
+        User.updateOne({email: req.user.email}, {expire: Date.now()})
             .then(() => {
-              Karateka.find({owner: usuary._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, mana: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1, mana: -1})
+              Karateka.find({owner: req.user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, mana: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1, mana: -1})
                 .then((trainees) => {
                   trainees.forEach((trainee)=>{
                     const id = trainee._id;
@@ -587,9 +637,9 @@ app.post('/classes/train', (req, res, next) => {
                 })
             })
       }else {
-         Sensei.find({owner: usuary._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+         Sensei.find({owner: req.user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
           .then((senseis)=> {
-            Karateka.find({owner: usuary._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+            Karateka.find({owner: req.user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
               .then((karatekas) => {
                 res.render('classes', {senseis, karatekas, trainErrorMessage: 'No puedes volver a entrenar en 24h'});
               })
@@ -598,20 +648,16 @@ app.post('/classes/train', (req, res, next) => {
               })
           })
       }
-    })
 });
 
 app.get('/classes/battle', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
-    .then((user) => {
-      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, standing: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
-          .then((opponents) => {
-            res.render('classes/battle', ({opponents}))
-          })
-          .catch((err)=> {
-            console.log(err);
-          })
-    })
+  Karateka.find({owner: req.user._id}, {name: 1, imageUrl: 1, strength: 1, dexterity: 1, stamina: 1, level: 1, nature: 1, mana: 1, standing: 1, _id: 1}).sort({strength: -1, dexterity: -1, stamina: -1})
+      .then((opponents) => {
+        res.render('classes/battle', ({opponents}))
+      })
+      .catch((err)=> {
+        console.log(err);
+      })
 });
 
 app.post('/classes/battle/', (req, res, next) => {
@@ -711,17 +757,15 @@ app.post('/classes/battle/', (req, res, next) => {
 })
 
 app.get('/classes/tourney', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
-    .then((user) => {
-      Karateka.find({owner: user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-        .then((opponents) => {
-          res.render('classes/tourney', {opponents});
-        })
-        .catch((err)=> {
-          console.log(err);
-    
-        });
+  
+  Karateka.find({owner: req.user._id}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+    .then((opponents) => {
+      res.render('classes/tourney', {opponents});
     })
+    .catch((err)=> {
+      console.log(err);
+
+    });
 });
 
 app.post('/classes/tourney', (req, res, next) => {
@@ -1154,106 +1198,101 @@ app.get('/city', (req, res, next) => {
 });
 
 app.post('/city', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
-    .then((user) => {
-      Karateka.find({owner: user._id})
-        .then((result)=>{
-          if(result.length < 16){
-            const civId = req.params;
-            const civilian = Civilian
-              .findOne(civId)
-              .then((civilian)=>{
-                console.log(civilian);
-          
-                const trainee = () => {
-          
-                  const karatekaName = () => {
-                    return civilian.name;
-                  }
-                  const karatekaGenre = () => {
-                    return civilian.genre;
-                  }
-                  const karatekaSolvency = () => {
-                    return civilian.solvency;
-                  }
-                  const karatekaNature = () => {
-                    return civilian.nature;
-                  }
-                  const karatekaImageUrl = () => {
-                    return civilian.imageUrl;
-                  }
-          
-                    const newKarateka = new Karateka({
-                    name: karatekaName(),
-                    genre: karatekaGenre(),
-                    solvency: karatekaSolvency(),
-                    nature: karatekaNature(),
-                    level: 'white',
-                    strength: 1,
-                    dexterity: 1,
-                    stamina: 1,
-                    mana: 1,
-                    standing: 0,
-                    imageUrl: karatekaImageUrl(),
-                    owner: user._id
-                  })
-                  return newKarateka;
-                }
-          
-                Karateka.create(trainee())
-                  .then((trainee) => {
-                    User.updateOne({email: req.session.currentUser}, {$push: {karatekas: trainee._id}})
-                      .then(()=> {
-                        Civilian.deleteOne(civId)
-                          .then(() => {
-                            res.redirect('/city');
-                          })
-                          .catch((err)=>{
-                            console.log(err);
-                            res.send("Error al borrar al antiguo ciudadano");
-                          })
+  Karateka.find({owner: req.user._id})
+    .then((result)=>{
+      if(result.length < 16){
+        const civId = req.params;
+        const civilian = Civilian
+          .findOne(civId)
+          .then((civilian)=>{
+            console.log(civilian);
+      
+            const trainee = () => {
+      
+              const karatekaName = () => {
+                return civilian.name;
+              }
+              const karatekaGenre = () => {
+                return civilian.genre;
+              }
+              const karatekaSolvency = () => {
+                return civilian.solvency;
+              }
+              const karatekaNature = () => {
+                return civilian.nature;
+              }
+              const karatekaImageUrl = () => {
+                return civilian.imageUrl;
+              }
+      
+                const newKarateka = new Karateka({
+                name: karatekaName(),
+                genre: karatekaGenre(),
+                solvency: karatekaSolvency(),
+                nature: karatekaNature(),
+                level: 'white',
+                strength: 1,
+                dexterity: 1,
+                stamina: 1,
+                mana: 1,
+                standing: 0,
+                imageUrl: karatekaImageUrl(),
+                owner: req.user._id
+              })
+              return newKarateka;
+            }
+      
+            Karateka.create(trainee())
+              .then((trainee) => {
+                User.updateOne({email: req.user.email}, {$push: {karatekas: trainee._id}})
+                  .then(()=> {
+                    Civilian.deleteOne(civId)
+                      .then(() => {
+                        res.redirect('/city');
+                      })
+                      .catch((err)=>{
+                        console.log(err);
+                        res.send("Error al borrar al antiguo ciudadano");
                       })
                   })
-                  .catch((err) => {
-                    console.log(err);
-                    res.send("Error creando al nuevo alumno");
-                  })
               })
-              .catch((err)=> {
+              .catch((err) => {
                 console.log(err);
-                res.send("Error buscando al ciudadano");
-              });
-          }else{
-            res.render('city', {errorMessage: 'Solo se permiten 16 alumnos'});
-          }
-        })
+                res.send("Error creando al nuevo alumno");
+              })
+          })
+          .catch((err)=> {
+            console.log(err);
+            res.send("Error buscando al ciudadano");
+          });
+      }else{
+        res.render('city', {errorMessage: 'Solo se permiten 16 alumnos'});
+      }
     })
 })
 
 // FIGHT
 
 app.get('/fight', (req, res, next) => {
-  User.findOne({email: req.session.currentUser})
-    .then((user) => {
-      Sensei.find({owner: user._id})
-        .then((player) => {
-          Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-            .then((masters) => {
-              Sensei.find({owner: {$ne: user._id}}, {name: 1, imageUrl: 1, level: 1, standing: 1})
-                .then((senseis) => {
-                  res.render('fight', {player, masters, senseis});
-                })
-                .catch((err) => {
-                  console.log(err);
-                })
+
+  Sensei.find({owner: req.user._id})
+    .then((player) => {
+      Master.find({}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+        .then((masters) => {
+          Sensei.find({owner: {$ne: req.user._id}}, {name: 1, imageUrl: 1, level: 1, standing: 1})
+            .then((senseis) => {
+              res.render('fight', {player, masters, senseis});
             })
-            .catch((err)=> {
+            .catch((err) => {
               console.log(err);
             })
         })
         .catch((err)=> {
           console.log(err);
         })
+    })
+    .catch((err)=> {
+      console.log(err);
     })
 });
 
@@ -1367,7 +1406,7 @@ app.get('/ranking', (req, res, next) => {
 // ADMIN
 
 app.use((req, res, next) => {
-  if(req.session.currentUser == 'victor.izquierdo1985@gmail.com'){
+  if(req.user.email == 'victor.izquierdo1985@gmail.com'){
     next();
   } else {
     res.redirect('/log-in');
